@@ -1,5 +1,3 @@
-
-//this is da snake
 class Snake {
   
   int lenght = 10;

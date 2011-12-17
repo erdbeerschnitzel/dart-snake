@@ -52685,8 +52685,6 @@ unnamed93577e$Ball$Dart.$Constructor = function(){
 }
 ;
 unnamed93577e$Ball$Dart.$Initializer = function(){
-  this.pos_X$field = 125;
-  this.pos_Y$field = 125;
 }
 ;
 unnamed93577e$Ball$Dart.Ball$$Factory = function(){

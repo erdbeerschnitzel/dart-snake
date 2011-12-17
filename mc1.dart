@@ -17,8 +17,7 @@ class mc {
     
     snake = new Snake();
     ball = new Ball();
-    
-   
+
     _intervalId = document.window.setInterval(this.drawSnake, 10);
   }
   
@@ -45,6 +44,7 @@ class mc {
     if(snake.touchesWall()){
       
       writeStatus("Game over!");
+      
       document.window.localStorage.setItem('highscore', snake.points.toString());
 
       document.window.clearInterval(_intervalId);  

@@ -1,7 +1,7 @@
 class Ball {
   
-  int pos_X = 125;
-  int pos_Y = 125;
+  int pos_X;
+  int pos_Y;
   
   Ball(){
     
