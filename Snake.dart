@@ -1,7 +1,7 @@
 class Snake {
   
   int lenght = 10;
-  int width = 8;
+  int width = 10;
   int pos_X = 25;
   int pos_Y = 25;
   int points = 0;
@@ -27,9 +27,9 @@ class Snake {
       
   }
   
-  bool touchesWall(){
+  bool touchesWall(CanvasElement canvas){
     
-    if(this.pos_X <= 3 ||  this.pos_X >= 293 || this.pos_Y <= 2 || this.pos_Y >= 143) return true;
+    if(this.pos_X <= 3 ||  this.pos_X >= canvas.width - 3 || this.pos_Y <= 2 || this.pos_Y >= canvas.height - 3) return true;
     
     return false;
   }

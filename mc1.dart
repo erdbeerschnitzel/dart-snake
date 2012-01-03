@@ -24,13 +24,15 @@ class mc {
 
   void drawSnake() {
     
-    var kannwas = document.query('#kannwas');
+    CanvasElement canvas = document.query('#kannwas');
     
-    CanvasRenderingContext2D ctx = kannwas.getContext('2d');
+    CanvasRenderingContext2D ctx = canvas.getContext('2d');
+
+    write('bla ' + canvas.height  + ' ' +  canvas.width);
     
-    ctx.clearRect(2, 2, 398, 398);
-    ctx.fillRect(ball.pos_X, ball.pos_Y, 8, 8);
-    ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10); 
+    ctx.clearRect(2, 2, canvas.height, canvas.width);
+    ctx.fillRect(ball.pos_X, ball.pos_Y, ball.size, ball.size);
+    ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, snake.width); 
 
     if(snake.catches(ball)){
       
@@ -40,8 +42,10 @@ class mc {
 
     }
 
+
     
-    if(snake.touchesWall()){
+    
+    if(snake.touchesWall(canvas)){
       
       writeStatus("Game over!");
       
@@ -52,7 +56,7 @@ class mc {
       
     }else {
       
-      writeStatus('to the  ' + snake.direction + '  --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
+      writeStatus('going  ' + snake.direction + '  --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
     }
  }
 

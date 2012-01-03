@@ -2,6 +2,7 @@ class Ball {
   
   int pos_X;
   int pos_Y;
+  int size = 8;
   
   Ball(){
     
