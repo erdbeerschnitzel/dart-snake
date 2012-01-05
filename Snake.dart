@@ -17,7 +17,7 @@ class Snake {
     
     if(ball.pos_Y >= this.pos_Y - 10 && ball.pos_Y <= this.pos_Y + 10 && ball.pos_X <= this.pos_X + 10 && ball.pos_X >= this.pos_X - 10) {
       
-      this.lenght += 1;
+      this.lenght += 5;
       this.points += 1;
       
       return true;

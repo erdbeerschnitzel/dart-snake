@@ -25,13 +25,24 @@ class mc {
 
   void drawSnake() {
     
-    var kannwas = document.query('#kannwas');
+    CanvasElement drawingArea = document.query('#drawingArea');
     
-    CanvasRenderingContext2D ctx = kannwas.getContext('2d');
+    CanvasRenderingContext2D ctx = drawingArea.getContext('2d');
     
-    ctx.clearRect(2, 2, 398, 398);
-    ctx.fillRect(ball.pos_X, ball.pos_Y, 8, 8);
-    ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10);
+    ctx.clearRect(2, 2, drawingArea.width, drawingArea.height);
+    ctx.fillRect(ball.pos_X, ball.pos_Y, ball.size, ball.size);
+    
+    //TODO: improve!
+    switch(snake.direction){
+    
+      case 'left': ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10);
+      case 'right': ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10);
+      case 'up': ctx.fillRect(snake.pos_X, snake.pos_Y, 10, snake.lenght);
+      case 'down': ctx.fillRect(snake.pos_X, snake.pos_Y, 10, snake.lenght);
+    
+    }
+    
+    
 
     if(snake.catches(ball)){
       
@@ -42,7 +53,7 @@ class mc {
     }
 
     
-    if(snake.touchesWall(kannwas)){
+    if(snake.touchesWall(drawingArea)){
       
       writeStatus("Game over!");
       document.window.localStorage.setItem('highscore', snake.points.toString());
