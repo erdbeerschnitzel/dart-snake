@@ -669,6 +669,10 @@ function native_NumberImplementation_negate() {
   "use strict";
   return -this;
 }
+function native_NumberImplementation_abs() {
+  "use strict";
+  return Math.abs(this);
+}
 function native_NumberImplementation_toDouble() {
   "use strict";
   return +this;
@@ -2092,6 +2096,16 @@ Number.prototype.GT$operator = function(other){
 ;
 Number.prototype.GTE$operator = function(other){
   return native_NumberImplementation_GTE.call(this, other);
+}
+;
+Number.prototype.abs$member = function(){
+  return native_NumberImplementation_abs.call(this);
+}
+;
+Number.prototype.abs$named = function($n, $o){
+  if ($o.count || $n != 0)
+    $nsme();
+  return Number.prototype.abs$member.call(this);
 }
 ;
 Number.prototype.toDouble$member = function(){
@@ -4224,13 +4238,6 @@ function native__AudioParamWrappingImplementation__set_value(_this, value) {
     throw __dom_wrap_exception(e);
   }
 }
-function native__BlobWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
 function native__CSSRuleListWrappingImplementation__get_length(_this) {
   try {
     return __dom_wrap(_this.$dom.length);
@@ -4770,13 +4777,6 @@ function native__HTMLBRElementWrappingImplementation__get_clear(_this) {
     throw __dom_wrap_exception(e);
   }
 }
-function native__HTMLBaseFontElementWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
 function native__HTMLButtonElementWrappingImplementation__get_value(_this) {
   try {
     return __dom_wrap(_this.$dom.value);
@@ -4875,13 +4875,6 @@ function native__HTMLEmbedElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
-function native__HTMLFontElementWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
 function native__HTMLFormElementWrappingImplementation__get_length(_this) {
   try {
     return __dom_wrap(_this.$dom.length);
@@ -4899,13 +4892,6 @@ function native__HTMLFrameElementWrappingImplementation__get_height(_this) {
 function native__HTMLFrameElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
-function native__HTMLHRElementWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -4941,13 +4927,6 @@ function native__HTMLImageElementWrappingImplementation__get_height(_this) {
 function native__HTMLImageElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
-function native__HTMLInputElementWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -5130,13 +5109,6 @@ function native__HTMLSelectElementWrappingImplementation__get_length(_this) {
 function native__HTMLSelectElementWrappingImplementation__set_length(_this, value) {
   try {
     _this.$dom.length = __dom_unwrap(value);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
-function native__HTMLSelectElementWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6310,13 +6282,6 @@ function native__TextTrackCueWrappingImplementation__get_direction(_this) {
     throw __dom_wrap_exception(e);
   }
 }
-function native__TextTrackCueWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
 function native__TextTrackCueListWrappingImplementation__get_length(_this) {
   try {
     return __dom_wrap(_this.$dom.length);
@@ -6418,13 +6383,6 @@ function native__Uint8ArrayWrappingImplementation__index(_this, index) {
 function native__Uint8ArrayWrappingImplementation__set_index(_this, index, value) {
   try {
     return _this.$dom[index] = __dom_unwrap(value);
-  } catch (e) {
-    throw __dom_wrap_exception(e);
-  }
-}
-function native__WebGLActiveInfoWrappingImplementation__get_size(_this) {
-  try {
-    return __dom_wrap(_this.$dom.size);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -17262,14 +17220,6 @@ _BlobWrappingImplementation$Dart.create__BlobWrappingImplementation$member = fun
 function native__BlobWrappingImplementation_create__BlobWrappingImplementation(){
   return _BlobWrappingImplementation$Dart.create__BlobWrappingImplementation$member();
 }
-_BlobWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _BlobWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_BlobWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__BlobWrappingImplementation__get_size(_this);
-}
-;
 _BlobWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'Blob';
 }
@@ -26830,14 +26780,6 @@ _HTMLBaseFontElementWrappingImplementation$Dart.create__HTMLBaseFontElementWrapp
 function native__HTMLBaseFontElementWrappingImplementation_create__HTMLBaseFontElementWrappingImplementation(){
   return _HTMLBaseFontElementWrappingImplementation$Dart.create__HTMLBaseFontElementWrappingImplementation$member();
 }
-_HTMLBaseFontElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _HTMLBaseFontElementWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_HTMLBaseFontElementWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__HTMLBaseFontElementWrappingImplementation__get_size(_this);
-}
-;
 _HTMLBaseFontElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'HTMLBaseFontElement';
 }
@@ -27395,14 +27337,6 @@ _HTMLFontElementWrappingImplementation$Dart.create__HTMLFontElementWrappingImple
 function native__HTMLFontElementWrappingImplementation_create__HTMLFontElementWrappingImplementation(){
   return _HTMLFontElementWrappingImplementation$Dart.create__HTMLFontElementWrappingImplementation$member();
 }
-_HTMLFontElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _HTMLFontElementWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_HTMLFontElementWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__HTMLFontElementWrappingImplementation__get_size(_this);
-}
-;
 _HTMLFontElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'HTMLFontElement';
 }
@@ -27607,14 +27541,6 @@ _HTMLHRElementWrappingImplementation$Dart.create__HTMLHRElementWrappingImplement
 function native__HTMLHRElementWrappingImplementation_create__HTMLHRElementWrappingImplementation(){
   return _HTMLHRElementWrappingImplementation$Dart.create__HTMLHRElementWrappingImplementation$member();
 }
-_HTMLHRElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _HTMLHRElementWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_HTMLHRElementWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__HTMLHRElementWrappingImplementation__get_size(_this);
-}
-;
 _HTMLHRElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return _HTMLHRElementWrappingImplementation$Dart._get_width$$member_(this);
 }
@@ -27925,14 +27851,6 @@ _HTMLInputElementWrappingImplementation$Dart.create__HTMLInputElementWrappingImp
 function native__HTMLInputElementWrappingImplementation_create__HTMLInputElementWrappingImplementation(){
   return _HTMLInputElementWrappingImplementation$Dart.create__HTMLInputElementWrappingImplementation$member();
 }
-_HTMLInputElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _HTMLInputElementWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_HTMLInputElementWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__HTMLInputElementWrappingImplementation__get_size(_this);
-}
-;
 _HTMLInputElementWrappingImplementation$Dart.prototype.value$getter = function(){
   return _HTMLInputElementWrappingImplementation$Dart._get_value$$member_(this);
 }
@@ -29286,14 +29204,6 @@ _HTMLSelectElementWrappingImplementation$Dart._get_length$$member_ = function(_t
 ;
 _HTMLSelectElementWrappingImplementation$Dart._set_length$$member_ = function(_this, value){
   return native__HTMLSelectElementWrappingImplementation__set_length(_this, value);
-}
-;
-_HTMLSelectElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _HTMLSelectElementWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_HTMLSelectElementWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__HTMLSelectElementWrappingImplementation__get_size(_this);
 }
 ;
 _HTMLSelectElementWrappingImplementation$Dart.prototype.value$getter = function(){
@@ -40103,14 +40013,6 @@ _TextTrackCueWrappingImplementation$Dart._get_direction$$member_ = function(_thi
   return native__TextTrackCueWrappingImplementation__get_direction(_this);
 }
 ;
-_TextTrackCueWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _TextTrackCueWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_TextTrackCueWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__TextTrackCueWrappingImplementation__get_size(_this);
-}
-;
 _TextTrackCueWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'TextTrackCue';
 }
@@ -41521,14 +41423,6 @@ _WebGLActiveInfoWrappingImplementation$Dart.create__WebGLActiveInfoWrappingImple
 function native__WebGLActiveInfoWrappingImplementation_create__WebGLActiveInfoWrappingImplementation(){
   return _WebGLActiveInfoWrappingImplementation$Dart.create__WebGLActiveInfoWrappingImplementation$member();
 }
-_WebGLActiveInfoWrappingImplementation$Dart.prototype.size$getter = function(){
-  return _WebGLActiveInfoWrappingImplementation$Dart._get_size$$member_(this);
-}
-;
-_WebGLActiveInfoWrappingImplementation$Dart._get_size$$member_ = function(_this){
-  return native__WebGLActiveInfoWrappingImplementation__get_size(_this);
-}
-;
 _WebGLActiveInfoWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'WebGLActiveInfo';
 }
@@ -46607,10 +46501,6 @@ htmlimpl0a8e4b$FontElementWrappingImplementation$Dart.FontElementWrappingImpleme
   return tmp$0;
 }
 ;
-htmlimpl0a8e4b$FontElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return this._ptr$htmlimpl0a8e4b$$getter_().size$getter();
-}
-;
 function htmlimpl0a8e4b$FormElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$FormElementWrappingImplementation$Dart, htmlimpl0a8e4b$ElementWrappingImplementation$Dart);
@@ -46681,10 +46571,6 @@ htmlimpl0a8e4b$HRElementWrappingImplementation$Dart.HRElementWrappingImplementat
   htmlimpl0a8e4b$HRElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$HRElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
-}
-;
-htmlimpl0a8e4b$HRElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return this._ptr$htmlimpl0a8e4b$$getter_().size$getter();
 }
 ;
 htmlimpl0a8e4b$HRElementWrappingImplementation$Dart.prototype.width$getter = function(){
@@ -46875,10 +46761,6 @@ htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.InputElementWrappingImple
   htmlimpl0a8e4b$InputElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$InputElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
-}
-;
-htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return this._ptr$htmlimpl0a8e4b$$getter_().size$getter();
 }
 ;
 htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.prototype.value$getter = function(){
@@ -50878,10 +50760,6 @@ htmlimpl0a8e4b$SelectElementWrappingImplementation$Dart.prototype.length$getter 
 htmlimpl0a8e4b$SelectElementWrappingImplementation$Dart.prototype.length$setter = function(value){
   var tmp$0;
   this._ptr$htmlimpl0a8e4b$$getter_().length$setter(tmp$0 = value) , tmp$0;
-}
-;
-htmlimpl0a8e4b$SelectElementWrappingImplementation$Dart.prototype.size$getter = function(){
-  return this._ptr$htmlimpl0a8e4b$$getter_().size$getter();
 }
 ;
 htmlimpl0a8e4b$SelectElementWrappingImplementation$Dart.prototype.value$getter = function(){
@@ -55632,7 +55510,7 @@ unnamed93577e$Ball$Dart.$lookupRTT = function(){
 }
 ;
 unnamed93577e$Ball$Dart.$Constructor = function(){
-  var tmp$1, tmp$2, tmp$3, tmp$0;
+  var tmp$5, tmp$1, tmp$2, tmp$3, tmp$4, tmp$0;
   this.pos_X$setter(tmp$0 = ADD$operator(2, MUL$operator(MUL$operator(Math$Dart.random$member(), Math$Dart.random$member()), 324324))) , tmp$0;
   this.pos_Y$setter(tmp$1 = ADD$operator(2, MUL$operator(MUL$operator(Math$Dart.random$member(), Math$Dart.random$member()), 324324))) , tmp$1;
   while (GT$operator(this.pos_X$getter(), 300)) {
@@ -55641,6 +55519,8 @@ unnamed93577e$Ball$Dart.$Constructor = function(){
   while (GT$operator(this.pos_Y$getter(), 140)) {
     this.pos_Y$setter(tmp$3 = ADD$operator(0, DIV$operator(this.pos_Y$getter(), 2))) , tmp$3;
   }
+  this.pos_X$setter(tmp$4 = this.pos_X$getter().abs$named(0, $noargs)) , tmp$4;
+  this.pos_Y$setter(tmp$5 = this.pos_Y$getter().abs$named(0, $noargs)) , tmp$5;
 }
 ;
 unnamed93577e$Ball$Dart.$Initializer = function(){
@@ -55669,10 +55549,6 @@ unnamed93577e$Ball$Dart.prototype.pos_Y$getter = function(){
 ;
 unnamed93577e$Ball$Dart.prototype.pos_Y$setter = function(tmp$0){
   this.pos_Y$field = tmp$0;
-}
-;
-unnamed93577e$Ball$Dart.prototype.size$getter = function(){
-  return this.size$field;
 }
 ;
 function unnamed93577e$Snake$Dart(){
@@ -55830,24 +55706,23 @@ unnamed93577e$mc$Dart.prototype._intervalId$unnamed93577e$$setter_ = function(tm
 ;
 unnamed93577e$mc$Dart.prototype.drawSnake$member = function(){
   var tmp$0;
-  var canvas = htmld071c1$document$getter().query$named(1, $noargs, '#kannwas');
-  var ctx = canvas.getContext$named(1, $noargs, '2d');
-  this.write$member(ADD$operator(ADD$operator(ADD$operator('bla ', canvas.height$getter()), ' '), canvas.width$getter()));
-  ctx.clearRect$named(4, $noargs, 2, 2, canvas.height$getter(), canvas.width$getter());
-  ctx.fillRect$named(4, $noargs, this.ball$getter().pos_X$getter(), this.ball$getter().pos_Y$getter(), this.ball$getter().size$getter(), this.ball$getter().size$getter());
-  ctx.fillRect$named(4, $noargs, this.snake$getter().pos_X$getter(), this.snake$getter().pos_Y$getter(), this.snake$getter().lenght$getter(), this.snake$getter().width$getter());
+  var kannwas = htmld071c1$document$getter().query$named(1, $noargs, '#kannwas');
+  var ctx = kannwas.getContext$named(1, $noargs, '2d');
+  ctx.clearRect$named(4, $noargs, 2, 2, 398, 398);
+  ctx.fillRect$named(4, $noargs, this.ball$getter().pos_X$getter(), this.ball$getter().pos_Y$getter(), 8, 8);
+  ctx.fillRect$named(4, $noargs, this.snake$getter().pos_X$getter(), this.snake$getter().pos_Y$getter(), this.snake$getter().lenght$getter(), 10);
   if (this.snake$getter().catches$named(1, $noargs, this.ball$getter())) {
     this.write$member(ADD$operator('Points: ', this.snake$getter().points$getter()));
     this.ball$setter(tmp$0 = unnamed93577e$Ball$Dart.Ball$$Factory()) , tmp$0;
   }
-  if (this.snake$getter().touchesWall$named(1, $noargs, canvas)) {
+  if (this.snake$getter().touchesWall$named(1, $noargs, kannwas)) {
     this.writeStatus$member('Game over!');
     htmld071c1$document$getter().window$getter().localStorage$getter().setItem$named(2, $noargs, 'highscore', this.snake$getter().points$getter().toString$named(0, $noargs));
     htmld071c1$document$getter().window$getter().clearInterval$named(1, $noargs, this._intervalId$unnamed93577e$$getter_());
     htmld071c1$document$getter().on$getter().keyPress$getter().remove$named(1, $noargs, $bind(unnamed93577e$mc$Dart.prototype.onKeyPress$named, unnamed93577e$mc$Dart.prototype.onKeyPress$named_$lookupRTT, this));
   }
    else {
-    this.writeStatus$member(ADD$operator(ADD$operator(ADD$operator(ADD$operator(ADD$operator('going  ', this.snake$getter().direction$getter()), '  --> x: '), this.snake$getter().pos_X$getter()), ' y: '), this.snake$getter().pos_Y$getter()));
+    this.writeStatus$member(ADD$operator(ADD$operator(ADD$operator(ADD$operator(ADD$operator('to the ', this.snake$getter().direction$getter()), ' --> x: '), this.snake$getter().pos_X$getter()), ' y: '), this.snake$getter().pos_Y$getter()));
   }
 }
 ;

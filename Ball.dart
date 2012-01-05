@@ -12,5 +12,8 @@ class Ball {
     while(pos_X > 300) pos_X = 0 + pos_X / 2;
     
     while(pos_Y > 140) pos_Y = 0 + pos_Y / 2;
+    
+    pos_X = pos_X.abs();
+    pos_Y = pos_Y.abs();
   }
 }
