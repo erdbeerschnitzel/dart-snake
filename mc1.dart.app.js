@@ -891,9 +891,17 @@ function native_StringImplementation_EQ(other) {
   "use strict";
   return typeof other == 'string' && this == other;
 }
+function native_StringImplementation__nativeIndexOf(other, startIndex) {
+  "use strict";
+  return this.indexOf(other, startIndex);
+}
 function native_StringImplementation_concat(other) {
   "use strict";
   return this.concat(other);
+}
+function native_StringImplementation__substringUnchecked(startIndex, endIndex) {
+  "use strict";
+  return this.substring(startIndex, endIndex);
 }
 function native_StringImplementation_toLowerCase() {
   "use strict";
@@ -1141,6 +1149,22 @@ Array.prototype.getRange$named = function($n, $o, start, length_0){
   if ($o.count || $n != 2)
     $nsme();
   return Array.prototype.getRange$member.call(this, start, length_0);
+}
+;
+Array.prototype.indexOf$member = function(element, start){
+  return Arrays$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+Array.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return Array.prototype.indexOf$member.call(this, element, start);
 }
 ;
 Array.prototype.add$member = function(element){
@@ -1401,6 +1425,25 @@ Arrays$Dart.copy$member = function(src, srcStart, dst, dstStart, count){
       }
     }
   }
+}
+;
+Arrays$Dart.indexOf$member = function(a, element, startIndex, endIndex){
+  var tmp$0;
+  if (GTE$operator(startIndex, a.length$getter())) {
+    return negate$operator(1);
+  }
+  if (LT$operator(startIndex, 0)) {
+    startIndex = 0;
+  }
+  {
+    var i = startIndex;
+    for (; LT$operator(i, endIndex); tmp$0 = i , (i = ADD$operator(tmp$0, 1) , tmp$0)) {
+      if (EQ$operator(a.INDEX$operator(i), element)) {
+        return i;
+      }
+    }
+  }
+  return negate$operator(1);
 }
 ;
 Arrays$Dart.rangeCheck$member = function(a, start, length_0){
@@ -2406,6 +2449,26 @@ String.prototype.EQ$operator = function(other){
   return native_StringImplementation_EQ.call(this, other);
 }
 ;
+String.prototype.indexOf$member = function(other, start){
+  return this._nativeIndexOf$$member_(other, start);
+}
+;
+String.prototype.indexOf$named = function($n, $o, other, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return String.prototype.indexOf$member.call(this, other, start);
+}
+;
+String.prototype._nativeIndexOf$$member_ = function(other, start){
+  return native_StringImplementation__nativeIndexOf.call(this, other, start);
+}
+;
 String.prototype.isEmpty$member = function(){
   return EQ$operator(this.length$getter(), 0);
 }
@@ -2428,6 +2491,62 @@ String.prototype.concat$named = function($n, $o, other){
 ;
 String.prototype.ADD$operator = function(obj){
   return this.concat$named(1, $noargs, obj.toString$named(0, $noargs));
+}
+;
+String.prototype.contains$member = function(pattern, startIndex){
+  var tmp$0;
+  if (LT$operator(startIndex, 0) || GT$operator(startIndex, this.length$getter())) {
+    $Dart$ThrowException(IndexOutOfRangeException$Dart.IndexOutOfRangeException$$Factory(startIndex));
+  }
+  if ($isString(pattern)) {
+    return NE$operator(this.indexOf$named(2, $noargs, pattern, startIndex), negate$operator(1));
+  }
+   else {
+    if (!!(tmp$0 = pattern , tmp$0 != null && tmp$0.$implements$JSSyntaxRegExp$Dart)) {
+      var regExp = pattern;
+      return regExp.hasMatch$named(1, $noargs, this._substringUnchecked$$member_(startIndex, this.length$getter()));
+    }
+     else {
+      var substr = this._substringUnchecked$$member_(startIndex, this.length$getter());
+      return !pattern.allMatches$named(1, $noargs, substr).iterator$named(0, $noargs).hasNext$named(0, $noargs);
+    }
+  }
+}
+;
+String.prototype.contains$named = function($n, $o, pattern, startIndex){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      startIndex = '$p_startIndex' in $o?(++seen , $o.$p_startIndex):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return String.prototype.contains$member.call(this, pattern, startIndex);
+}
+;
+String.prototype.allMatches$member = function(str){
+  var result = RTT.setTypeInfo([], Array.$lookupRTT());
+  if (this.isEmpty$named(0, $noargs)) {
+    return result;
+  }
+  var length_0 = this.length$getter();
+  var ix = 0;
+  while (LT$operator(ix, str.length$getter())) {
+    var foundIx = str.indexOf$named(2, $noargs, this, ix);
+    if (LT$operator(foundIx, 0)) {
+      break;
+    }
+    result.add$named(1, $noargs, _StringMatch$Dart._StringMatch$$Factory(foundIx, str, this.toString$named(0, $noargs)));
+    ix = ADD$operator(foundIx, length_0);
+  }
+  return result;
+}
+;
+String.prototype.allMatches$named = function($n, $o, str){
+  if ($o.count || $n != 1)
+    $nsme();
+  return String.prototype.allMatches$member.call(this, str);
 }
 ;
 String.prototype.toLowerCase$member = function(){
@@ -2464,6 +2583,10 @@ String.prototype._indexOperator$$member_ = function(index){
   return native_StringImplementation__indexOperator.call(this, index);
 }
 ;
+String.prototype._substringUnchecked$$member_ = function(startIndex, endIndex){
+  return native_StringImplementation__substringUnchecked.call(this, startIndex, endIndex);
+}
+;
 String.prototype.dynamic$getter = function(){
   return this.toString$member();
 }
@@ -2480,6 +2603,58 @@ _StringJsUtil$Dart.toDartString$member = function(o){
 function native__StringJsUtil_toDartString(o){
   return _StringJsUtil$Dart.toDartString$member(o);
 }
+function _StringMatch$Dart(){
+}
+_StringMatch$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('_StringMatch$Dart'), _StringMatch$Dart.$RTTimplements, null, named);
+}
+;
+_StringMatch$Dart.$RTTimplements = function(rtt){
+  _StringMatch$Dart.$addTo(rtt);
+}
+;
+_StringMatch$Dart.$addTo = function(target){
+  var rtt = _StringMatch$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+  Match$Dart.$addTo(target);
+}
+;
+_StringMatch$Dart.$Constructor = function(_start, str, pattern){
+}
+;
+_StringMatch$Dart.$Initializer = function(_start, str, pattern){
+  this._start$$field_ = _start;
+  this.str$field = str;
+  this.pattern$field = pattern;
+}
+;
+_StringMatch$Dart._StringMatch$$Factory = function(_start, str, pattern){
+  var tmp$0 = new _StringMatch$Dart;
+  tmp$0.$typeInfo = _StringMatch$Dart.$lookupRTT();
+  _StringMatch$Dart.$Initializer.call(tmp$0, _start, str, pattern);
+  _StringMatch$Dart.$Constructor.call(tmp$0, _start, str, pattern);
+  return tmp$0;
+}
+;
+_StringMatch$Dart.prototype.INDEX$operator = function(g){
+  return this.group$member(g);
+}
+;
+_StringMatch$Dart.prototype.group$member = function(group_){
+  if (NE$operator(group_, 0)) {
+    $Dart$ThrowException(IndexOutOfRangeException$Dart.IndexOutOfRangeException$$Factory(group_));
+  }
+  return this.pattern$getter();
+}
+;
+_StringMatch$Dart.prototype.pattern$getter = function(){
+  return this.pattern$field;
+}
+;
+_StringMatch$Dart.prototype.$const_id = function(){
+  return $cls('_StringMatch$Dart') + (':' + $dart_const_id(this._start$$field_)) + (':' + $dart_const_id(this.str$field)) + (':' + $dart_const_id(this.pattern$field));
+}
+;
 function StringBase$Dart(){
 }
 StringBase$Dart.join$member = function(strings, separator){
@@ -4610,6 +4785,17 @@ Queue$Dart.$addTo = function(target, typeArgs){
   Collection$Dart.$addTo(target, [RTT.getTypeArg(target.typeArgs, 0)]);
 }
 ;
+function Match$Dart(){
+}
+Match$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('Match$Dart'), null, null, named);
+}
+;
+Match$Dart.$addTo = function(target){
+  var rtt = Match$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+}
+;
 function String$Dart(){
 }
 String$Dart.$lookupRTT = function(typeArgs, named){
@@ -4709,6 +4895,27 @@ function native__BlobWrappingImplementation__get_size(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__CSSFontFaceRuleWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSPageRuleWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSRuleWrappingImplementation__set_cssText(_this, value) {
+  try {
+    _this.$dom.cssText = __dom_unwrap(value);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__CSSRuleListWrappingImplementation__get_length(_this) {
   try {
     return __dom_wrap(_this.$dom.length);
@@ -4723,6 +4930,13 @@ function native__CSSRuleListWrappingImplementation__item(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__CSSStyleDeclarationWrappingImplementation__set_cssText(_this, value) {
+  try {
+    _this.$dom.cssText = __dom_unwrap(value);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__CSSStyleDeclarationWrappingImplementation__get_length(_this) {
   try {
     return __dom_wrap(_this.$dom.length);
@@ -4730,9 +4944,44 @@ function native__CSSStyleDeclarationWrappingImplementation__get_length(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__CSSStyleDeclarationWrappingImplementation__getPropertyValue(_this, propertyName) {
+  try {
+    return __dom_wrap(_this.$dom.getPropertyValue(__dom_unwrap(propertyName)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__CSSStyleDeclarationWrappingImplementation__item(_this, index) {
   try {
     return __dom_wrap(_this.$dom.item(__dom_unwrap(index)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSStyleDeclarationWrappingImplementation__setProperty(_this, propertyName, value) {
+  try {
+    return __dom_wrap(_this.$dom.setProperty(__dom_unwrap(propertyName), __dom_unwrap(value)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSStyleDeclarationWrappingImplementation__setProperty_2(_this, propertyName, value, priority) {
+  try {
+    return __dom_wrap(_this.$dom.setProperty(__dom_unwrap(propertyName), __dom_unwrap(value), __dom_unwrap(priority)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSStyleRuleWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__CSSValueWrappingImplementation__set_cssText(_this, value) {
+  try {
+    _this.$dom.cssText = __dom_unwrap(value);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -4817,6 +5066,13 @@ function native__ClientRectListWrappingImplementation__get_length(_this) {
 function native__ClientRectListWrappingImplementation__item(_this, index) {
   try {
     return __dom_wrap(_this.$dom.item(__dom_unwrap(index)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__ConsoleWrappingImplementation__group(_this) {
+  try {
+    return __dom_wrap(_this.$dom.group());
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -4933,6 +5189,13 @@ function native__DOMTokenListWrappingImplementation__add(_this, token) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__DOMTokenListWrappingImplementation__contains(_this, token) {
+  try {
+    return __dom_wrap(_this.$dom.contains(__dom_unwrap(token)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__DOMTokenListWrappingImplementation__item(_this, index) {
   try {
     return __dom_wrap(_this.$dom.item(__dom_unwrap(index)));
@@ -4971,6 +5234,20 @@ function native__DOMWindowWrappingImplementation__get_length(_this) {
 function native__DOMWindowWrappingImplementation__set_length(_this, value) {
   try {
     _this.$dom.length = __dom_unwrap(value);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__DOMWindowWrappingImplementation__get_navigator(_this) {
+  try {
+    return __dom_wrap(_this.$dom.navigator);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__DOMWindowWrappingImplementation__get_parent(_this) {
+  try {
+    return __dom_wrap(_this.$dom.parent);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -5097,6 +5374,13 @@ function native__ElementWrappingImplementation__get_firstElementChild(_this) {
 function native__ElementWrappingImplementation__get_lastElementChild(_this) {
   try {
     return __dom_wrap(_this.$dom.lastElementChild);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__ElementWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -5545,6 +5829,13 @@ function native__HTMLImageElementWrappingImplementation__get_height(_this) {
 function native__HTMLImageElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__HTMLInputElementWrappingImplementation__get_pattern(_this) {
+  try {
+    return __dom_wrap(_this.$dom.pattern);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6186,6 +6477,13 @@ function native__NamedNodeMapWrappingImplementation__item(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__NavigatorWrappingImplementation__get_userAgent(_this) {
+  try {
+    return __dom_wrap(_this.$dom.userAgent);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__NodeWrappingImplementation__get_childNodes(_this) {
   try {
     return __dom_wrap(_this.$dom.childNodes);
@@ -6245,6 +6543,13 @@ function native__NodeWrappingImplementation__addEventListener_Node_2(_this, type
 function native__NodeWrappingImplementation__appendChild(_this, newChild) {
   try {
     return __dom_wrap(_this.$dom.appendChild(__dom_unwrap(newChild)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__NodeWrappingImplementation__contains(_this, other) {
+  try {
+    return __dom_wrap(_this.$dom.contains(__dom_unwrap(other)));
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6382,6 +6687,13 @@ function native__SQLResultSetRowListWrappingImplementation__item(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGAElementWrappingImplementation__get_style_SVGAElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGAngleWrappingImplementation__get_value(_this) {
   try {
     return __dom_wrap(_this.$dom.value);
@@ -6392,6 +6704,34 @@ function native__SVGAngleWrappingImplementation__get_value(_this) {
 function native__SVGAngleWrappingImplementation__set_value(_this, value) {
   try {
     _this.$dom.value = __dom_unwrap(value);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGCircleElementWrappingImplementation__get_style_SVGCircleElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGClipPathElementWrappingImplementation__get_style_SVGClipPathElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGDefsElementWrappingImplementation__get_style_SVGDefsElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGDescElementWrappingImplementation__get_style_SVGDescElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6473,6 +6813,13 @@ function native__SVGElementInstanceListWrappingImplementation__item(_this, index
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGEllipseElementWrappingImplementation__get_style_SVGEllipseElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGExceptionWrappingImplementation__toString(_this) {
   try {
     return __dom_wrap(_this.$dom.toString());
@@ -6494,6 +6841,13 @@ function native__SVGFEBlendElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEBlendElementWrappingImplementation__get_style_SVGFEBlendElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEColorMatrixElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6504,6 +6858,13 @@ function native__SVGFEColorMatrixElementWrappingImplementation__get_height(_this
 function native__SVGFEColorMatrixElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEColorMatrixElementWrappingImplementation__get_style_SVGFEColorMatrixElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6522,6 +6883,13 @@ function native__SVGFEComponentTransferElementWrappingImplementation__get_width(
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEComponentTransferElementWrappingImplementation__get_style_SVGFEComponentTransferElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFECompositeElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6532,6 +6900,13 @@ function native__SVGFECompositeElementWrappingImplementation__get_height(_this) 
 function native__SVGFECompositeElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFECompositeElementWrappingImplementation__get_style_SVGFECompositeElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6550,6 +6925,13 @@ function native__SVGFEConvolveMatrixElementWrappingImplementation__get_width(_th
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEConvolveMatrixElementWrappingImplementation__get_style_SVGFEConvolveMatrixElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEDiffuseLightingElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6560,6 +6942,13 @@ function native__SVGFEDiffuseLightingElementWrappingImplementation__get_height(_
 function native__SVGFEDiffuseLightingElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEDiffuseLightingElementWrappingImplementation__get_style_SVGFEDiffuseLightingElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6578,6 +6967,13 @@ function native__SVGFEDisplacementMapElementWrappingImplementation__get_width(_t
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEDisplacementMapElementWrappingImplementation__get_style_SVGFEDisplacementMapElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEDropShadowElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6588,6 +6984,13 @@ function native__SVGFEDropShadowElementWrappingImplementation__get_height(_this)
 function native__SVGFEDropShadowElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEDropShadowElementWrappingImplementation__get_style_SVGFEDropShadowElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6606,6 +7009,13 @@ function native__SVGFEFloodElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEFloodElementWrappingImplementation__get_style_SVGFEFloodElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEGaussianBlurElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6616,6 +7026,13 @@ function native__SVGFEGaussianBlurElementWrappingImplementation__get_height(_thi
 function native__SVGFEGaussianBlurElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEGaussianBlurElementWrappingImplementation__get_style_SVGFEGaussianBlurElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6634,6 +7051,13 @@ function native__SVGFEImageElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEImageElementWrappingImplementation__get_style_SVGFEImageElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEMergeElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6644,6 +7068,13 @@ function native__SVGFEMergeElementWrappingImplementation__get_height(_this) {
 function native__SVGFEMergeElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEMergeElementWrappingImplementation__get_style_SVGFEMergeElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6662,6 +7093,13 @@ function native__SVGFEMorphologyElementWrappingImplementation__get_width(_this) 
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFEMorphologyElementWrappingImplementation__get_style_SVGFEMorphologyElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFEOffsetElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6672,6 +7110,13 @@ function native__SVGFEOffsetElementWrappingImplementation__get_height(_this) {
 function native__SVGFEOffsetElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFEOffsetElementWrappingImplementation__get_style_SVGFEOffsetElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6690,6 +7135,13 @@ function native__SVGFESpecularLightingElementWrappingImplementation__get_width(_
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFESpecularLightingElementWrappingImplementation__get_style_SVGFESpecularLightingElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFETileElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6700,6 +7152,13 @@ function native__SVGFETileElementWrappingImplementation__get_height(_this) {
 function native__SVGFETileElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFETileElementWrappingImplementation__get_style_SVGFETileElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6718,6 +7177,13 @@ function native__SVGFETurbulenceElementWrappingImplementation__get_width(_this) 
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGFETurbulenceElementWrappingImplementation__get_style_SVGFETurbulenceElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGFilterElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6728,6 +7194,13 @@ function native__SVGFilterElementWrappingImplementation__get_height(_this) {
 function native__SVGFilterElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGFilterElementWrappingImplementation__get_style_SVGFilterElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6760,6 +7233,34 @@ function native__SVGForeignObjectElementWrappingImplementation__get_width(_this)
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGForeignObjectElementWrappingImplementation__get_style_SVGForeignObjectElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGGElementWrappingImplementation__get_style_SVGGElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGGlyphRefElementWrappingImplementation__get_style_SVGGlyphRefElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGGradientElementWrappingImplementation__get_style_SVGGradientElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGImageElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6770,6 +7271,13 @@ function native__SVGImageElementWrappingImplementation__get_height(_this) {
 function native__SVGImageElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGImageElementWrappingImplementation__get_style_SVGImageElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6802,6 +7310,20 @@ function native__SVGLengthListWrappingImplementation__getItem(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGLineElementWrappingImplementation__get_style_SVGLineElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGMarkerElementWrappingImplementation__get_style_SVGMarkerElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGMaskElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6812,6 +7334,13 @@ function native__SVGMaskElementWrappingImplementation__get_height(_this) {
 function native__SVGMaskElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGMaskElementWrappingImplementation__get_style_SVGMaskElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6844,6 +7373,13 @@ function native__SVGNumberListWrappingImplementation__getItem(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGPathElementWrappingImplementation__get_style_SVGPathElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGPathSegListWrappingImplementation__clear(_this) {
   try {
     return __dom_wrap(_this.$dom.clear());
@@ -6872,6 +7408,13 @@ function native__SVGPatternElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGPatternElementWrappingImplementation__get_style_SVGPatternElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGPointListWrappingImplementation__clear(_this) {
   try {
     return __dom_wrap(_this.$dom.clear());
@@ -6893,9 +7436,23 @@ function native__SVGPolygonElementWrappingImplementation__get_points(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGPolygonElementWrappingImplementation__get_style_SVGPolygonElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGPolylineElementWrappingImplementation__get_points(_this) {
   try {
     return __dom_wrap(_this.$dom.points);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGPolylineElementWrappingImplementation__get_style_SVGPolylineElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6928,6 +7485,13 @@ function native__SVGRectElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGRectElementWrappingImplementation__get_style_SVGRectElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGSVGElementWrappingImplementation__get_height(_this) {
   try {
     return __dom_wrap(_this.$dom.height);
@@ -6942,6 +7506,20 @@ function native__SVGSVGElementWrappingImplementation__get_width(_this) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__SVGSVGElementWrappingImplementation__get_style_SVGSVGElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGStopElementWrappingImplementation__get_style_SVGStopElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__SVGStringListWrappingImplementation__clear(_this) {
   try {
     return __dom_wrap(_this.$dom.clear());
@@ -6952,6 +7530,41 @@ function native__SVGStringListWrappingImplementation__clear(_this) {
 function native__SVGStringListWrappingImplementation__getItem(_this, index) {
   try {
     return __dom_wrap(_this.$dom.getItem(__dom_unwrap(index)));
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGStylableWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGSwitchElementWrappingImplementation__get_style_SVGSwitchElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGSymbolElementWrappingImplementation__get_style_SVGSymbolElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGTextContentElementWrappingImplementation__get_style_SVGTextContentElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGTitleElementWrappingImplementation__get_style_SVGTitleElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -6980,6 +7593,13 @@ function native__SVGUseElementWrappingImplementation__get_height(_this) {
 function native__SVGUseElementWrappingImplementation__get_width(_this) {
   try {
     return __dom_wrap(_this.$dom.width);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__SVGUseElementWrappingImplementation__get_style_SVGUseElement(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -7376,6 +7996,13 @@ function native__WebKitAnimationListWrappingImplementation__item(_this, index) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__WebKitCSSKeyframeRuleWrappingImplementation__get_style(_this) {
+  try {
+    return __dom_wrap(_this.$dom.style);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__WebKitCSSMatrixWrappingImplementation__toString(_this) {
   try {
     return __dom_wrap(_this.$dom.toString());
@@ -7418,6 +8045,13 @@ function native__WebSocketWrappingImplementation__send(_this, data) {
     throw __dom_wrap_exception(e);
   }
 }
+function native__WorkerContextWrappingImplementation__get_navigator(_this) {
+  try {
+    return __dom_wrap(_this.$dom.navigator);
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
 function native__WorkerContextWrappingImplementation__addEventListener(_this, type, listener) {
   try {
     return __dom_wrap(_this.$dom.addEventListener(__dom_unwrap(type), __dom_unwrap(listener)));
@@ -7456,6 +8090,13 @@ function native__WorkerContextWrappingImplementation__removeEventListener_2(_thi
 function native__WorkerLocationWrappingImplementation__toString(_this) {
   try {
     return __dom_wrap(_this.$dom.toString());
+  } catch (e) {
+    throw __dom_wrap_exception(e);
+  }
+}
+function native__WorkerNavigatorWrappingImplementation__get_userAgent(_this) {
+  try {
+    return __dom_wrap(_this.$dom.userAgent);
   } catch (e) {
     throw __dom_wrap_exception(e);
   }
@@ -18397,6 +19038,14 @@ _CSSRuleWrappingImplementation$Dart.create__CSSRuleWrappingImplementation$member
 function native__CSSRuleWrappingImplementation_create__CSSRuleWrappingImplementation(){
   return _CSSRuleWrappingImplementation$Dart.create__CSSRuleWrappingImplementation$member();
 }
+_CSSRuleWrappingImplementation$Dart.prototype.cssText$setter = function(value){
+  _CSSRuleWrappingImplementation$Dart._set_cssText$$member_(this, value);
+}
+;
+_CSSRuleWrappingImplementation$Dart._set_cssText$$member_ = function(_this, value){
+  return native__CSSRuleWrappingImplementation__set_cssText(_this, value);
+}
+;
 _CSSRuleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'CSSRule';
 }
@@ -18487,6 +19136,14 @@ _CSSFontFaceRuleWrappingImplementation$Dart.create__CSSFontFaceRuleWrappingImple
 function native__CSSFontFaceRuleWrappingImplementation_create__CSSFontFaceRuleWrappingImplementation(){
   return _CSSFontFaceRuleWrappingImplementation$Dart.create__CSSFontFaceRuleWrappingImplementation$member();
 }
+_CSSFontFaceRuleWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _CSSFontFaceRuleWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_CSSFontFaceRuleWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__CSSFontFaceRuleWrappingImplementation__get_style(_this);
+}
+;
 _CSSFontFaceRuleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'CSSFontFaceRule';
 }
@@ -18622,6 +19279,14 @@ _CSSPageRuleWrappingImplementation$Dart.create__CSSPageRuleWrappingImplementatio
 function native__CSSPageRuleWrappingImplementation_create__CSSPageRuleWrappingImplementation(){
   return _CSSPageRuleWrappingImplementation$Dart.create__CSSPageRuleWrappingImplementation$member();
 }
+_CSSPageRuleWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _CSSPageRuleWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_CSSPageRuleWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__CSSPageRuleWrappingImplementation__get_style(_this);
+}
+;
 _CSSPageRuleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'CSSPageRule';
 }
@@ -18667,12 +19332,34 @@ _CSSStyleDeclarationWrappingImplementation$Dart.create__CSSStyleDeclarationWrapp
 function native__CSSStyleDeclarationWrappingImplementation_create__CSSStyleDeclarationWrappingImplementation(){
   return _CSSStyleDeclarationWrappingImplementation$Dart.create__CSSStyleDeclarationWrappingImplementation$member();
 }
+_CSSStyleDeclarationWrappingImplementation$Dart.prototype.cssText$setter = function(value){
+  _CSSStyleDeclarationWrappingImplementation$Dart._set_cssText$$member_(this, value);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart._set_cssText$$member_ = function(_this, value){
+  return native__CSSStyleDeclarationWrappingImplementation__set_cssText(_this, value);
+}
+;
 _CSSStyleDeclarationWrappingImplementation$Dart.prototype.length$getter = function(){
   return _CSSStyleDeclarationWrappingImplementation$Dart._get_length$$member_(this);
 }
 ;
 _CSSStyleDeclarationWrappingImplementation$Dart._get_length$$member_ = function(_this){
   return native__CSSStyleDeclarationWrappingImplementation__get_length(_this);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$member = function(propertyName){
+  return _CSSStyleDeclarationWrappingImplementation$Dart._getPropertyValue$$member_(this, propertyName);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$named = function($n, $o, propertyName){
+  if ($o.count || $n != 1)
+    $nsme();
+  return _CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$member.call(this, propertyName);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart._getPropertyValue$$member_ = function(receiver, propertyName){
+  return native__CSSStyleDeclarationWrappingImplementation__getPropertyValue(receiver, propertyName);
 }
 ;
 _CSSStyleDeclarationWrappingImplementation$Dart.prototype.item$member = function(index){
@@ -18687,6 +19374,37 @@ _CSSStyleDeclarationWrappingImplementation$Dart.prototype.item$named = function(
 ;
 _CSSStyleDeclarationWrappingImplementation$Dart._item$$member_ = function(receiver, index){
   return native__CSSStyleDeclarationWrappingImplementation__item(receiver, index);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$member = function(propertyName, value, priority){
+  if (priority == null) {
+    _CSSStyleDeclarationWrappingImplementation$Dart._setProperty$$member_(this, propertyName, value);
+    return;
+  }
+   else {
+    _CSSStyleDeclarationWrappingImplementation$Dart._setProperty_2$$member_(this, propertyName, value, priority);
+    return;
+  }
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$named = function($n, $o, propertyName, value, priority){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 2:
+      priority = '$p_priority' in $o?(++seen , $o.$p_priority):(++def , $Dart$Null);
+  }
+  if (seen != $o.count || seen + def + $n != 3)
+    $nsme();
+  return _CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$member.call(this, propertyName, value, priority);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart._setProperty$$member_ = function(receiver, propertyName, value){
+  return native__CSSStyleDeclarationWrappingImplementation__setProperty(receiver, propertyName, value);
+}
+;
+_CSSStyleDeclarationWrappingImplementation$Dart._setProperty_2$$member_ = function(receiver, propertyName, value, priority){
+  return native__CSSStyleDeclarationWrappingImplementation__setProperty_2(receiver, propertyName, value, priority);
 }
 ;
 _CSSStyleDeclarationWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -18734,6 +19452,14 @@ _CSSStyleRuleWrappingImplementation$Dart.create__CSSStyleRuleWrappingImplementat
 function native__CSSStyleRuleWrappingImplementation_create__CSSStyleRuleWrappingImplementation(){
   return _CSSStyleRuleWrappingImplementation$Dart.create__CSSStyleRuleWrappingImplementation$member();
 }
+_CSSStyleRuleWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _CSSStyleRuleWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_CSSStyleRuleWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__CSSStyleRuleWrappingImplementation__get_style(_this);
+}
+;
 _CSSStyleRuleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'CSSStyleRule';
 }
@@ -18824,6 +19550,14 @@ _CSSValueWrappingImplementation$Dart.create__CSSValueWrappingImplementation$memb
 function native__CSSValueWrappingImplementation_create__CSSValueWrappingImplementation(){
   return _CSSValueWrappingImplementation$Dart.create__CSSValueWrappingImplementation$member();
 }
+_CSSValueWrappingImplementation$Dart.prototype.cssText$setter = function(value){
+  _CSSValueWrappingImplementation$Dart._set_cssText$$member_(this, value);
+}
+;
+_CSSValueWrappingImplementation$Dart._set_cssText$$member_ = function(_this, value){
+  return native__CSSValueWrappingImplementation__set_cssText(_this, value);
+}
+;
 _CSSValueWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'CSSValue';
 }
@@ -19136,6 +19870,22 @@ _CanvasPixelArrayWrappingImplementation$Dart.prototype.addAll$named = function($
   if ($o.count || $n != 1)
     $nsme();
   return _CanvasPixelArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_CanvasPixelArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_CanvasPixelArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _CanvasPixelArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _CanvasPixelArrayWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -19576,6 +20326,15 @@ _ConsoleWrappingImplementation$Dart.create__ConsoleWrappingImplementation$member
 function native__ConsoleWrappingImplementation_create__ConsoleWrappingImplementation(){
   return _ConsoleWrappingImplementation$Dart.create__ConsoleWrappingImplementation$member();
 }
+_ConsoleWrappingImplementation$Dart.prototype.group$member = function(){
+  _ConsoleWrappingImplementation$Dart._group$$member_(this);
+  return;
+}
+;
+_ConsoleWrappingImplementation$Dart._group$$member_ = function(receiver){
+  return native__ConsoleWrappingImplementation__group(receiver);
+}
+;
 _ConsoleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'Console';
 }
@@ -20521,6 +21280,20 @@ _DOMTokenListWrappingImplementation$Dart._add$$member_ = function(receiver, toke
   return native__DOMTokenListWrappingImplementation__add(receiver, token);
 }
 ;
+_DOMTokenListWrappingImplementation$Dart.prototype.contains$member = function(token){
+  return _DOMTokenListWrappingImplementation$Dart._contains$$member_(this, token);
+}
+;
+_DOMTokenListWrappingImplementation$Dart.prototype.contains$named = function($n, $o, token){
+  if ($o.count || $n != 1)
+    $nsme();
+  return _DOMTokenListWrappingImplementation$Dart.prototype.contains$member.call(this, token);
+}
+;
+_DOMTokenListWrappingImplementation$Dart._contains$$member_ = function(receiver, token){
+  return native__DOMTokenListWrappingImplementation__contains(receiver, token);
+}
+;
 _DOMTokenListWrappingImplementation$Dart.prototype.item$member = function(index){
   return _DOMTokenListWrappingImplementation$Dart._item$$member_(this, index);
 }
@@ -20745,6 +21518,22 @@ _DOMWindowWrappingImplementation$Dart.prototype.localStorage$getter = function()
 ;
 _DOMWindowWrappingImplementation$Dart._get_localStorage$$member_ = function(_this){
   return native__DOMWindowWrappingImplementation__get_localStorage(_this);
+}
+;
+_DOMWindowWrappingImplementation$Dart.prototype.navigator$getter = function(){
+  return _DOMWindowWrappingImplementation$Dart._get_navigator$$member_(this);
+}
+;
+_DOMWindowWrappingImplementation$Dart._get_navigator$$member_ = function(_this){
+  return native__DOMWindowWrappingImplementation__get_navigator(_this);
+}
+;
+_DOMWindowWrappingImplementation$Dart.prototype.parent$getter = function(){
+  return _DOMWindowWrappingImplementation$Dart._get_parent$$member_(this);
+}
+;
+_DOMWindowWrappingImplementation$Dart._get_parent$$member_ = function(_this){
+  return native__DOMWindowWrappingImplementation__get_parent(_this);
 }
 ;
 _DOMWindowWrappingImplementation$Dart.prototype.window$getter = function(){
@@ -23066,6 +23855,22 @@ _Float32ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $
   return _Float32ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_Float32ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Float32ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Float32ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _Float32ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -23276,6 +24081,22 @@ _Float64ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $
   if ($o.count || $n != 1)
     $nsme();
   return _Float64ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_Float64ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Float64ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Float64ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _Float64ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -23641,6 +24462,22 @@ _HTMLCollectionWrappingImplementation$Dart.prototype.addAll$named = function($n,
   if ($o.count || $n != 1)
     $nsme();
   return _HTMLCollectionWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_HTMLCollectionWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_HTMLCollectionWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _HTMLCollectionWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _HTMLCollectionWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -25278,6 +26115,22 @@ _Int16ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o,
   return _Int16ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_Int16ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Int16ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Int16ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _Int16ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -25490,6 +26343,22 @@ _Int32ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o,
   return _Int32ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_Int32ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Int32ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Int32ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _Int32ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -25700,6 +26569,22 @@ _Int8ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o, 
   if ($o.count || $n != 1)
     $nsme();
   return _Int8ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_Int8ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Int8ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Int8ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _Int8ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -26299,6 +27184,22 @@ _MediaListWrappingImplementation$Dart.prototype.addAll$named = function($n, $o, 
   if ($o.count || $n != 1)
     $nsme();
   return _MediaListWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_MediaListWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_MediaListWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _MediaListWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _MediaListWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -27035,6 +27936,22 @@ _NamedNodeMapWrappingImplementation$Dart.prototype.addAll$named = function($n, $
   return _NamedNodeMapWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_NamedNodeMapWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_NamedNodeMapWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _NamedNodeMapWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _NamedNodeMapWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -27194,6 +28111,14 @@ _NavigatorWrappingImplementation$Dart.create__NavigatorWrappingImplementation$me
 function native__NavigatorWrappingImplementation_create__NavigatorWrappingImplementation(){
   return _NavigatorWrappingImplementation$Dart.create__NavigatorWrappingImplementation$member();
 }
+_NavigatorWrappingImplementation$Dart.prototype.userAgent$getter = function(){
+  return _NavigatorWrappingImplementation$Dart._get_userAgent$$member_(this);
+}
+;
+_NavigatorWrappingImplementation$Dart._get_userAgent$$member_ = function(_this){
+  return native__NavigatorWrappingImplementation__get_userAgent(_this);
+}
+;
 _NavigatorWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'Navigator';
 }
@@ -27402,6 +28327,22 @@ _NodeListWrappingImplementation$Dart.prototype.addAll$named = function($n, $o, c
   if ($o.count || $n != 1)
     $nsme();
   return _NodeListWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_NodeListWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_NodeListWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _NodeListWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _NodeListWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -27713,6 +28654,20 @@ _NodeWrappingImplementation$Dart.prototype.appendChild$named = function($n, $o, 
 ;
 _NodeWrappingImplementation$Dart._appendChild$$member_ = function(receiver, newChild){
   return native__NodeWrappingImplementation__appendChild(receiver, newChild);
+}
+;
+_NodeWrappingImplementation$Dart.prototype.contains$member = function(other){
+  return _NodeWrappingImplementation$Dart._contains$$member_(this, other);
+}
+;
+_NodeWrappingImplementation$Dart.prototype.contains$named = function($n, $o, other){
+  if ($o.count || $n != 1)
+    $nsme();
+  return _NodeWrappingImplementation$Dart.prototype.contains$member.call(this, other);
+}
+;
+_NodeWrappingImplementation$Dart._contains$$member_ = function(receiver, other){
+  return native__NodeWrappingImplementation__contains(receiver, other);
 }
 ;
 _NodeWrappingImplementation$Dart.prototype.hasChildNodes$member = function(){
@@ -28200,6 +29155,14 @@ _ElementWrappingImplementation$Dart.prototype.lastElementChild$getter = function
 ;
 _ElementWrappingImplementation$Dart._get_lastElementChild$$member_ = function(_this){
   return native__ElementWrappingImplementation__get_lastElementChild(_this);
+}
+;
+_ElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _ElementWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_ElementWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__ElementWrappingImplementation__get_style(_this);
 }
 ;
 _ElementWrappingImplementation$Dart.prototype.querySelector$member = function(selectors){
@@ -29860,6 +30823,14 @@ _HTMLInputElementWrappingImplementation$Dart.create__HTMLInputElementWrappingImp
 function native__HTMLInputElementWrappingImplementation_create__HTMLInputElementWrappingImplementation(){
   return _HTMLInputElementWrappingImplementation$Dart.create__HTMLInputElementWrappingImplementation$member();
 }
+_HTMLInputElementWrappingImplementation$Dart.prototype.pattern$getter = function(){
+  return _HTMLInputElementWrappingImplementation$Dart._get_pattern$$member_(this);
+}
+;
+_HTMLInputElementWrappingImplementation$Dart._get_pattern$$member_ = function(_this){
+  return native__HTMLInputElementWrappingImplementation__get_pattern(_this);
+}
+;
 _HTMLInputElementWrappingImplementation$Dart.prototype.size$getter = function(){
   return _HTMLInputElementWrappingImplementation$Dart._get_size$$member_(this);
 }
@@ -34471,6 +35442,14 @@ _SVGAElementWrappingImplementation$Dart.create__SVGAElementWrappingImplementatio
 function native__SVGAElementWrappingImplementation_create__SVGAElementWrappingImplementation(){
   return _SVGAElementWrappingImplementation$Dart.create__SVGAElementWrappingImplementation$member();
 }
+_SVGAElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGAElementWrappingImplementation$Dart._get_style_SVGAElement$$member_(this);
+}
+;
+_SVGAElementWrappingImplementation$Dart._get_style_SVGAElement$$member_ = function(_this){
+  return native__SVGAElementWrappingImplementation__get_style_SVGAElement(_this);
+}
+;
 _SVGAElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGAElement';
 }
@@ -34831,6 +35810,14 @@ _SVGCircleElementWrappingImplementation$Dart.create__SVGCircleElementWrappingImp
 function native__SVGCircleElementWrappingImplementation_create__SVGCircleElementWrappingImplementation(){
   return _SVGCircleElementWrappingImplementation$Dart.create__SVGCircleElementWrappingImplementation$member();
 }
+_SVGCircleElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGCircleElementWrappingImplementation$Dart._get_style_SVGCircleElement$$member_(this);
+}
+;
+_SVGCircleElementWrappingImplementation$Dart._get_style_SVGCircleElement$$member_ = function(_this){
+  return native__SVGCircleElementWrappingImplementation__get_style_SVGCircleElement(_this);
+}
+;
 _SVGCircleElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGCircleElement';
 }
@@ -34876,6 +35863,14 @@ _SVGClipPathElementWrappingImplementation$Dart.create__SVGClipPathElementWrappin
 function native__SVGClipPathElementWrappingImplementation_create__SVGClipPathElementWrappingImplementation(){
   return _SVGClipPathElementWrappingImplementation$Dart.create__SVGClipPathElementWrappingImplementation$member();
 }
+_SVGClipPathElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGClipPathElementWrappingImplementation$Dart._get_style_SVGClipPathElement$$member_(this);
+}
+;
+_SVGClipPathElementWrappingImplementation$Dart._get_style_SVGClipPathElement$$member_ = function(_this){
+  return native__SVGClipPathElementWrappingImplementation__get_style_SVGClipPathElement(_this);
+}
+;
 _SVGClipPathElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGClipPathElement';
 }
@@ -35011,6 +36006,14 @@ _SVGDefsElementWrappingImplementation$Dart.create__SVGDefsElementWrappingImpleme
 function native__SVGDefsElementWrappingImplementation_create__SVGDefsElementWrappingImplementation(){
   return _SVGDefsElementWrappingImplementation$Dart.create__SVGDefsElementWrappingImplementation$member();
 }
+_SVGDefsElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGDefsElementWrappingImplementation$Dart._get_style_SVGDefsElement$$member_(this);
+}
+;
+_SVGDefsElementWrappingImplementation$Dart._get_style_SVGDefsElement$$member_ = function(_this){
+  return native__SVGDefsElementWrappingImplementation__get_style_SVGDefsElement(_this);
+}
+;
 _SVGDefsElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGDefsElement';
 }
@@ -35056,6 +36059,14 @@ _SVGDescElementWrappingImplementation$Dart.create__SVGDescElementWrappingImpleme
 function native__SVGDescElementWrappingImplementation_create__SVGDescElementWrappingImplementation(){
   return _SVGDescElementWrappingImplementation$Dart.create__SVGDescElementWrappingImplementation$member();
 }
+_SVGDescElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGDescElementWrappingImplementation$Dart._get_style_SVGDescElement$$member_(this);
+}
+;
+_SVGDescElementWrappingImplementation$Dart._get_style_SVGDescElement$$member_ = function(_this){
+  return native__SVGDescElementWrappingImplementation__get_style_SVGDescElement(_this);
+}
+;
 _SVGDescElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGDescElement';
 }
@@ -35101,6 +36112,14 @@ _SVGEllipseElementWrappingImplementation$Dart.create__SVGEllipseElementWrappingI
 function native__SVGEllipseElementWrappingImplementation_create__SVGEllipseElementWrappingImplementation(){
   return _SVGEllipseElementWrappingImplementation$Dart.create__SVGEllipseElementWrappingImplementation$member();
 }
+_SVGEllipseElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGEllipseElementWrappingImplementation$Dart._get_style_SVGEllipseElement$$member_(this);
+}
+;
+_SVGEllipseElementWrappingImplementation$Dart._get_style_SVGEllipseElement$$member_ = function(_this){
+  return native__SVGEllipseElementWrappingImplementation__get_style_SVGEllipseElement(_this);
+}
+;
 _SVGEllipseElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGEllipseElement';
 }
@@ -35266,6 +36285,14 @@ _SVGFEBlendElementWrappingImplementation$Dart._get_width$$member_ = function(_th
   return native__SVGFEBlendElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEBlendElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEBlendElementWrappingImplementation$Dart._get_style_SVGFEBlendElement$$member_(this);
+}
+;
+_SVGFEBlendElementWrappingImplementation$Dart._get_style_SVGFEBlendElement$$member_ = function(_this){
+  return native__SVGFEBlendElementWrappingImplementation__get_style_SVGFEBlendElement(_this);
+}
+;
 _SVGFEBlendElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEBlendElement';
 }
@@ -35325,6 +36352,14 @@ _SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.width$getter = fun
 ;
 _SVGFEColorMatrixElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFEColorMatrixElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEColorMatrixElementWrappingImplementation$Dart._get_style_SVGFEColorMatrixElement$$member_(this);
+}
+;
+_SVGFEColorMatrixElementWrappingImplementation$Dart._get_style_SVGFEColorMatrixElement$$member_ = function(_this){
+  return native__SVGFEColorMatrixElementWrappingImplementation__get_style_SVGFEColorMatrixElement(_this);
 }
 ;
 _SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -35388,6 +36423,14 @@ _SVGFEComponentTransferElementWrappingImplementation$Dart._get_width$$member_ = 
   return native__SVGFEComponentTransferElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEComponentTransferElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEComponentTransferElementWrappingImplementation$Dart._get_style_SVGFEComponentTransferElement$$member_(this);
+}
+;
+_SVGFEComponentTransferElementWrappingImplementation$Dart._get_style_SVGFEComponentTransferElement$$member_ = function(_this){
+  return native__SVGFEComponentTransferElementWrappingImplementation__get_style_SVGFEComponentTransferElement(_this);
+}
+;
 _SVGFEComponentTransferElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEComponentTransferElement';
 }
@@ -35447,6 +36490,14 @@ _SVGFECompositeElementWrappingImplementation$Dart.prototype.width$getter = funct
 ;
 _SVGFECompositeElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFECompositeElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFECompositeElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFECompositeElementWrappingImplementation$Dart._get_style_SVGFECompositeElement$$member_(this);
+}
+;
+_SVGFECompositeElementWrappingImplementation$Dart._get_style_SVGFECompositeElement$$member_ = function(_this){
+  return native__SVGFECompositeElementWrappingImplementation__get_style_SVGFECompositeElement(_this);
 }
 ;
 _SVGFECompositeElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -35510,6 +36561,14 @@ _SVGFEConvolveMatrixElementWrappingImplementation$Dart._get_width$$member_ = fun
   return native__SVGFEConvolveMatrixElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEConvolveMatrixElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEConvolveMatrixElementWrappingImplementation$Dart._get_style_SVGFEConvolveMatrixElement$$member_(this);
+}
+;
+_SVGFEConvolveMatrixElementWrappingImplementation$Dart._get_style_SVGFEConvolveMatrixElement$$member_ = function(_this){
+  return native__SVGFEConvolveMatrixElementWrappingImplementation__get_style_SVGFEConvolveMatrixElement(_this);
+}
+;
 _SVGFEConvolveMatrixElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEConvolveMatrixElement';
 }
@@ -35571,6 +36630,14 @@ _SVGFEDiffuseLightingElementWrappingImplementation$Dart._get_width$$member_ = fu
   return native__SVGFEDiffuseLightingElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEDiffuseLightingElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEDiffuseLightingElementWrappingImplementation$Dart._get_style_SVGFEDiffuseLightingElement$$member_(this);
+}
+;
+_SVGFEDiffuseLightingElementWrappingImplementation$Dart._get_style_SVGFEDiffuseLightingElement$$member_ = function(_this){
+  return native__SVGFEDiffuseLightingElementWrappingImplementation__get_style_SVGFEDiffuseLightingElement(_this);
+}
+;
 _SVGFEDiffuseLightingElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEDiffuseLightingElement';
 }
@@ -35630,6 +36697,14 @@ _SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.width$getter =
 ;
 _SVGFEDisplacementMapElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFEDisplacementMapElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEDisplacementMapElementWrappingImplementation$Dart._get_style_SVGFEDisplacementMapElement$$member_(this);
+}
+;
+_SVGFEDisplacementMapElementWrappingImplementation$Dart._get_style_SVGFEDisplacementMapElement$$member_ = function(_this){
+  return native__SVGFEDisplacementMapElementWrappingImplementation__get_style_SVGFEDisplacementMapElement(_this);
 }
 ;
 _SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -35738,6 +36813,14 @@ _SVGFEDropShadowElementWrappingImplementation$Dart._get_width$$member_ = functio
   return native__SVGFEDropShadowElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEDropShadowElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEDropShadowElementWrappingImplementation$Dart._get_style_SVGFEDropShadowElement$$member_(this);
+}
+;
+_SVGFEDropShadowElementWrappingImplementation$Dart._get_style_SVGFEDropShadowElement$$member_ = function(_this){
+  return native__SVGFEDropShadowElementWrappingImplementation__get_style_SVGFEDropShadowElement(_this);
+}
+;
 _SVGFEDropShadowElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEDropShadowElement';
 }
@@ -35797,6 +36880,14 @@ _SVGFEFloodElementWrappingImplementation$Dart.prototype.width$getter = function(
 ;
 _SVGFEFloodElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFEFloodElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFEFloodElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEFloodElementWrappingImplementation$Dart._get_style_SVGFEFloodElement$$member_(this);
+}
+;
+_SVGFEFloodElementWrappingImplementation$Dart._get_style_SVGFEFloodElement$$member_ = function(_this){
+  return native__SVGFEFloodElementWrappingImplementation__get_style_SVGFEFloodElement(_this);
 }
 ;
 _SVGFEFloodElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -36040,6 +37131,14 @@ _SVGFEGaussianBlurElementWrappingImplementation$Dart._get_width$$member_ = funct
   return native__SVGFEGaussianBlurElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEGaussianBlurElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEGaussianBlurElementWrappingImplementation$Dart._get_style_SVGFEGaussianBlurElement$$member_(this);
+}
+;
+_SVGFEGaussianBlurElementWrappingImplementation$Dart._get_style_SVGFEGaussianBlurElement$$member_ = function(_this){
+  return native__SVGFEGaussianBlurElementWrappingImplementation__get_style_SVGFEGaussianBlurElement(_this);
+}
+;
 _SVGFEGaussianBlurElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEGaussianBlurElement';
 }
@@ -36101,6 +37200,14 @@ _SVGFEImageElementWrappingImplementation$Dart._get_width$$member_ = function(_th
   return native__SVGFEImageElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEImageElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEImageElementWrappingImplementation$Dart._get_style_SVGFEImageElement$$member_(this);
+}
+;
+_SVGFEImageElementWrappingImplementation$Dart._get_style_SVGFEImageElement$$member_ = function(_this){
+  return native__SVGFEImageElementWrappingImplementation__get_style_SVGFEImageElement(_this);
+}
+;
 _SVGFEImageElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEImageElement';
 }
@@ -36160,6 +37267,14 @@ _SVGFEMergeElementWrappingImplementation$Dart.prototype.width$getter = function(
 ;
 _SVGFEMergeElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFEMergeElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFEMergeElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEMergeElementWrappingImplementation$Dart._get_style_SVGFEMergeElement$$member_(this);
+}
+;
+_SVGFEMergeElementWrappingImplementation$Dart._get_style_SVGFEMergeElement$$member_ = function(_this){
+  return native__SVGFEMergeElementWrappingImplementation__get_style_SVGFEMergeElement(_this);
 }
 ;
 _SVGFEMergeElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -36268,6 +37383,14 @@ _SVGFEMorphologyElementWrappingImplementation$Dart._get_width$$member_ = functio
   return native__SVGFEMorphologyElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFEMorphologyElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEMorphologyElementWrappingImplementation$Dart._get_style_SVGFEMorphologyElement$$member_(this);
+}
+;
+_SVGFEMorphologyElementWrappingImplementation$Dart._get_style_SVGFEMorphologyElement$$member_ = function(_this){
+  return native__SVGFEMorphologyElementWrappingImplementation__get_style_SVGFEMorphologyElement(_this);
+}
+;
 _SVGFEMorphologyElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFEMorphologyElement';
 }
@@ -36327,6 +37450,14 @@ _SVGFEOffsetElementWrappingImplementation$Dart.prototype.width$getter = function
 ;
 _SVGFEOffsetElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFEOffsetElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFEOffsetElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFEOffsetElementWrappingImplementation$Dart._get_style_SVGFEOffsetElement$$member_(this);
+}
+;
+_SVGFEOffsetElementWrappingImplementation$Dart._get_style_SVGFEOffsetElement$$member_ = function(_this){
+  return native__SVGFEOffsetElementWrappingImplementation__get_style_SVGFEOffsetElement(_this);
 }
 ;
 _SVGFEOffsetElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -36435,6 +37566,14 @@ _SVGFESpecularLightingElementWrappingImplementation$Dart._get_width$$member_ = f
   return native__SVGFESpecularLightingElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFESpecularLightingElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFESpecularLightingElementWrappingImplementation$Dart._get_style_SVGFESpecularLightingElement$$member_(this);
+}
+;
+_SVGFESpecularLightingElementWrappingImplementation$Dart._get_style_SVGFESpecularLightingElement$$member_ = function(_this){
+  return native__SVGFESpecularLightingElementWrappingImplementation__get_style_SVGFESpecularLightingElement(_this);
+}
+;
 _SVGFESpecularLightingElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFESpecularLightingElement';
 }
@@ -36541,6 +37680,14 @@ _SVGFETileElementWrappingImplementation$Dart._get_width$$member_ = function(_thi
   return native__SVGFETileElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFETileElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFETileElementWrappingImplementation$Dart._get_style_SVGFETileElement$$member_(this);
+}
+;
+_SVGFETileElementWrappingImplementation$Dart._get_style_SVGFETileElement$$member_ = function(_this){
+  return native__SVGFETileElementWrappingImplementation__get_style_SVGFETileElement(_this);
+}
+;
 _SVGFETileElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFETileElement';
 }
@@ -36602,6 +37749,14 @@ _SVGFETurbulenceElementWrappingImplementation$Dart._get_width$$member_ = functio
   return native__SVGFETurbulenceElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGFETurbulenceElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFETurbulenceElementWrappingImplementation$Dart._get_style_SVGFETurbulenceElement$$member_(this);
+}
+;
+_SVGFETurbulenceElementWrappingImplementation$Dart._get_style_SVGFETurbulenceElement$$member_ = function(_this){
+  return native__SVGFETurbulenceElementWrappingImplementation__get_style_SVGFETurbulenceElement(_this);
+}
+;
 _SVGFETurbulenceElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGFETurbulenceElement';
 }
@@ -36661,6 +37816,14 @@ _SVGFilterElementWrappingImplementation$Dart.prototype.width$getter = function()
 ;
 _SVGFilterElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGFilterElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGFilterElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGFilterElementWrappingImplementation$Dart._get_style_SVGFilterElement$$member_(this);
+}
+;
+_SVGFilterElementWrappingImplementation$Dart._get_style_SVGFilterElement$$member_ = function(_this){
+  return native__SVGFilterElementWrappingImplementation__get_style_SVGFilterElement(_this);
 }
 ;
 _SVGFilterElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -37039,6 +38202,14 @@ _SVGForeignObjectElementWrappingImplementation$Dart._get_width$$member_ = functi
   return native__SVGForeignObjectElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGForeignObjectElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGForeignObjectElementWrappingImplementation$Dart._get_style_SVGForeignObjectElement$$member_(this);
+}
+;
+_SVGForeignObjectElementWrappingImplementation$Dart._get_style_SVGForeignObjectElement$$member_ = function(_this){
+  return native__SVGForeignObjectElementWrappingImplementation__get_style_SVGForeignObjectElement(_this);
+}
+;
 _SVGForeignObjectElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGForeignObjectElement';
 }
@@ -37084,6 +38255,14 @@ _SVGGElementWrappingImplementation$Dart.create__SVGGElementWrappingImplementatio
 function native__SVGGElementWrappingImplementation_create__SVGGElementWrappingImplementation(){
   return _SVGGElementWrappingImplementation$Dart.create__SVGGElementWrappingImplementation$member();
 }
+_SVGGElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGGElementWrappingImplementation$Dart._get_style_SVGGElement$$member_(this);
+}
+;
+_SVGGElementWrappingImplementation$Dart._get_style_SVGGElement$$member_ = function(_this){
+  return native__SVGGElementWrappingImplementation__get_style_SVGGElement(_this);
+}
+;
 _SVGGElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGGElement';
 }
@@ -37174,6 +38353,14 @@ _SVGGlyphRefElementWrappingImplementation$Dart.create__SVGGlyphRefElementWrappin
 function native__SVGGlyphRefElementWrappingImplementation_create__SVGGlyphRefElementWrappingImplementation(){
   return _SVGGlyphRefElementWrappingImplementation$Dart.create__SVGGlyphRefElementWrappingImplementation$member();
 }
+_SVGGlyphRefElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGGlyphRefElementWrappingImplementation$Dart._get_style_SVGGlyphRefElement$$member_(this);
+}
+;
+_SVGGlyphRefElementWrappingImplementation$Dart._get_style_SVGGlyphRefElement$$member_ = function(_this){
+  return native__SVGGlyphRefElementWrappingImplementation__get_style_SVGGlyphRefElement(_this);
+}
+;
 _SVGGlyphRefElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGGlyphRefElement';
 }
@@ -37219,6 +38406,14 @@ _SVGGradientElementWrappingImplementation$Dart.create__SVGGradientElementWrappin
 function native__SVGGradientElementWrappingImplementation_create__SVGGradientElementWrappingImplementation(){
   return _SVGGradientElementWrappingImplementation$Dart.create__SVGGradientElementWrappingImplementation$member();
 }
+_SVGGradientElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGGradientElementWrappingImplementation$Dart._get_style_SVGGradientElement$$member_(this);
+}
+;
+_SVGGradientElementWrappingImplementation$Dart._get_style_SVGGradientElement$$member_ = function(_this){
+  return native__SVGGradientElementWrappingImplementation__get_style_SVGGradientElement(_this);
+}
+;
 _SVGGradientElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGGradientElement';
 }
@@ -37323,6 +38518,14 @@ _SVGImageElementWrappingImplementation$Dart.prototype.width$getter = function(){
 ;
 _SVGImageElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGImageElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGImageElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGImageElementWrappingImplementation$Dart._get_style_SVGImageElement$$member_(this);
+}
+;
+_SVGImageElementWrappingImplementation$Dart._get_style_SVGImageElement$$member_ = function(_this){
+  return native__SVGImageElementWrappingImplementation__get_style_SVGImageElement(_this);
 }
 ;
 _SVGImageElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -37558,6 +38761,14 @@ _SVGLineElementWrappingImplementation$Dart.create__SVGLineElementWrappingImpleme
 function native__SVGLineElementWrappingImplementation_create__SVGLineElementWrappingImplementation(){
   return _SVGLineElementWrappingImplementation$Dart.create__SVGLineElementWrappingImplementation$member();
 }
+_SVGLineElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGLineElementWrappingImplementation$Dart._get_style_SVGLineElement$$member_(this);
+}
+;
+_SVGLineElementWrappingImplementation$Dart._get_style_SVGLineElement$$member_ = function(_this){
+  return native__SVGLineElementWrappingImplementation__get_style_SVGLineElement(_this);
+}
+;
 _SVGLineElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGLineElement';
 }
@@ -37738,6 +38949,14 @@ _SVGMarkerElementWrappingImplementation$Dart.create__SVGMarkerElementWrappingImp
 function native__SVGMarkerElementWrappingImplementation_create__SVGMarkerElementWrappingImplementation(){
   return _SVGMarkerElementWrappingImplementation$Dart.create__SVGMarkerElementWrappingImplementation$member();
 }
+_SVGMarkerElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGMarkerElementWrappingImplementation$Dart._get_style_SVGMarkerElement$$member_(this);
+}
+;
+_SVGMarkerElementWrappingImplementation$Dart._get_style_SVGMarkerElement$$member_ = function(_this){
+  return native__SVGMarkerElementWrappingImplementation__get_style_SVGMarkerElement(_this);
+}
+;
 _SVGMarkerElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGMarkerElement';
 }
@@ -37797,6 +39016,14 @@ _SVGMaskElementWrappingImplementation$Dart.prototype.width$getter = function(){
 ;
 _SVGMaskElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGMaskElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGMaskElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGMaskElementWrappingImplementation$Dart._get_style_SVGMaskElement$$member_(this);
+}
+;
+_SVGMaskElementWrappingImplementation$Dart._get_style_SVGMaskElement$$member_ = function(_this){
+  return native__SVGMaskElementWrappingImplementation__get_style_SVGMaskElement(_this);
 }
 ;
 _SVGMaskElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -38167,6 +39394,14 @@ _SVGPathElementWrappingImplementation$Dart.create__SVGPathElementWrappingImpleme
 function native__SVGPathElementWrappingImplementation_create__SVGPathElementWrappingImplementation(){
   return _SVGPathElementWrappingImplementation$Dart.create__SVGPathElementWrappingImplementation$member();
 }
+_SVGPathElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGPathElementWrappingImplementation$Dart._get_style_SVGPathElement$$member_(this);
+}
+;
+_SVGPathElementWrappingImplementation$Dart._get_style_SVGPathElement$$member_ = function(_this){
+  return native__SVGPathElementWrappingImplementation__get_style_SVGPathElement(_this);
+}
+;
 _SVGPathElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGPathElement';
 }
@@ -39210,6 +40445,14 @@ _SVGPatternElementWrappingImplementation$Dart._get_width$$member_ = function(_th
   return native__SVGPatternElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGPatternElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGPatternElementWrappingImplementation$Dart._get_style_SVGPatternElement$$member_(this);
+}
+;
+_SVGPatternElementWrappingImplementation$Dart._get_style_SVGPatternElement$$member_ = function(_this){
+  return native__SVGPatternElementWrappingImplementation__get_style_SVGPatternElement(_this);
+}
+;
 _SVGPatternElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGPatternElement';
 }
@@ -39390,6 +40633,14 @@ _SVGPolygonElementWrappingImplementation$Dart._get_points$$member_ = function(_t
   return native__SVGPolygonElementWrappingImplementation__get_points(_this);
 }
 ;
+_SVGPolygonElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGPolygonElementWrappingImplementation$Dart._get_style_SVGPolygonElement$$member_(this);
+}
+;
+_SVGPolygonElementWrappingImplementation$Dart._get_style_SVGPolygonElement$$member_ = function(_this){
+  return native__SVGPolygonElementWrappingImplementation__get_style_SVGPolygonElement(_this);
+}
+;
 _SVGPolygonElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGPolygonElement';
 }
@@ -39441,6 +40692,14 @@ _SVGPolylineElementWrappingImplementation$Dart.prototype.points$getter = functio
 ;
 _SVGPolylineElementWrappingImplementation$Dart._get_points$$member_ = function(_this){
   return native__SVGPolylineElementWrappingImplementation__get_points(_this);
+}
+;
+_SVGPolylineElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGPolylineElementWrappingImplementation$Dart._get_style_SVGPolylineElement$$member_(this);
+}
+;
+_SVGPolylineElementWrappingImplementation$Dart._get_style_SVGPolylineElement$$member_ = function(_this){
+  return native__SVGPolylineElementWrappingImplementation__get_style_SVGPolylineElement(_this);
 }
 ;
 _SVGPolylineElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -39592,6 +40851,14 @@ _SVGRectElementWrappingImplementation$Dart.prototype.width$getter = function(){
 ;
 _SVGRectElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGRectElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGRectElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGRectElementWrappingImplementation$Dart._get_style_SVGRectElement$$member_(this);
+}
+;
+_SVGRectElementWrappingImplementation$Dart._get_style_SVGRectElement$$member_ = function(_this){
+  return native__SVGRectElementWrappingImplementation__get_style_SVGRectElement(_this);
 }
 ;
 _SVGRectElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -39761,6 +41028,14 @@ _SVGSVGElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGSVGElementWrappingImplementation__get_width(_this);
 }
 ;
+_SVGSVGElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGSVGElementWrappingImplementation$Dart._get_style_SVGSVGElement$$member_(this);
+}
+;
+_SVGSVGElementWrappingImplementation$Dart._get_style_SVGSVGElement$$member_ = function(_this){
+  return native__SVGSVGElementWrappingImplementation__get_style_SVGSVGElement(_this);
+}
+;
 _SVGSVGElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGSVGElement';
 }
@@ -39896,6 +41171,14 @@ _SVGStopElementWrappingImplementation$Dart.create__SVGStopElementWrappingImpleme
 function native__SVGStopElementWrappingImplementation_create__SVGStopElementWrappingImplementation(){
   return _SVGStopElementWrappingImplementation$Dart.create__SVGStopElementWrappingImplementation$member();
 }
+_SVGStopElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGStopElementWrappingImplementation$Dart._get_style_SVGStopElement$$member_(this);
+}
+;
+_SVGStopElementWrappingImplementation$Dart._get_style_SVGStopElement$$member_ = function(_this){
+  return native__SVGStopElementWrappingImplementation__get_style_SVGStopElement(_this);
+}
+;
 _SVGStopElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGStopElement';
 }
@@ -40023,6 +41306,14 @@ _SVGStylableWrappingImplementation$Dart.create__SVGStylableWrappingImplementatio
 function native__SVGStylableWrappingImplementation_create__SVGStylableWrappingImplementation(){
   return _SVGStylableWrappingImplementation$Dart.create__SVGStylableWrappingImplementation$member();
 }
+_SVGStylableWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGStylableWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_SVGStylableWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__SVGStylableWrappingImplementation__get_style(_this);
+}
+;
 _SVGStylableWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGStylable';
 }
@@ -40174,6 +41465,14 @@ _SVGSwitchElementWrappingImplementation$Dart.create__SVGSwitchElementWrappingImp
 function native__SVGSwitchElementWrappingImplementation_create__SVGSwitchElementWrappingImplementation(){
   return _SVGSwitchElementWrappingImplementation$Dart.create__SVGSwitchElementWrappingImplementation$member();
 }
+_SVGSwitchElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGSwitchElementWrappingImplementation$Dart._get_style_SVGSwitchElement$$member_(this);
+}
+;
+_SVGSwitchElementWrappingImplementation$Dart._get_style_SVGSwitchElement$$member_ = function(_this){
+  return native__SVGSwitchElementWrappingImplementation__get_style_SVGSwitchElement(_this);
+}
+;
 _SVGSwitchElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGSwitchElement';
 }
@@ -40219,6 +41518,14 @@ _SVGSymbolElementWrappingImplementation$Dart.create__SVGSymbolElementWrappingImp
 function native__SVGSymbolElementWrappingImplementation_create__SVGSymbolElementWrappingImplementation(){
   return _SVGSymbolElementWrappingImplementation$Dart.create__SVGSymbolElementWrappingImplementation$member();
 }
+_SVGSymbolElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGSymbolElementWrappingImplementation$Dart._get_style_SVGSymbolElement$$member_(this);
+}
+;
+_SVGSymbolElementWrappingImplementation$Dart._get_style_SVGSymbolElement$$member_ = function(_this){
+  return native__SVGSymbolElementWrappingImplementation__get_style_SVGSymbolElement(_this);
+}
+;
 _SVGSymbolElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGSymbolElement';
 }
@@ -40309,6 +41616,14 @@ _SVGTextContentElementWrappingImplementation$Dart.create__SVGTextContentElementW
 function native__SVGTextContentElementWrappingImplementation_create__SVGTextContentElementWrappingImplementation(){
   return _SVGTextContentElementWrappingImplementation$Dart.create__SVGTextContentElementWrappingImplementation$member();
 }
+_SVGTextContentElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGTextContentElementWrappingImplementation$Dart._get_style_SVGTextContentElement$$member_(this);
+}
+;
+_SVGTextContentElementWrappingImplementation$Dart._get_style_SVGTextContentElement$$member_ = function(_this){
+  return native__SVGTextContentElementWrappingImplementation__get_style_SVGTextContentElement(_this);
+}
+;
 _SVGTextContentElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGTextContentElement';
 }
@@ -40624,6 +41939,14 @@ _SVGTitleElementWrappingImplementation$Dart.create__SVGTitleElementWrappingImple
 function native__SVGTitleElementWrappingImplementation_create__SVGTitleElementWrappingImplementation(){
   return _SVGTitleElementWrappingImplementation$Dart.create__SVGTitleElementWrappingImplementation$member();
 }
+_SVGTitleElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGTitleElementWrappingImplementation$Dart._get_style_SVGTitleElement$$member_(this);
+}
+;
+_SVGTitleElementWrappingImplementation$Dart._get_style_SVGTitleElement$$member_ = function(_this){
+  return native__SVGTitleElementWrappingImplementation__get_style_SVGTitleElement(_this);
+}
+;
 _SVGTitleElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'SVGTitleElement';
 }
@@ -40945,6 +42268,14 @@ _SVGUseElementWrappingImplementation$Dart.prototype.width$getter = function(){
 ;
 _SVGUseElementWrappingImplementation$Dart._get_width$$member_ = function(_this){
   return native__SVGUseElementWrappingImplementation__get_width(_this);
+}
+;
+_SVGUseElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _SVGUseElementWrappingImplementation$Dart._get_style_SVGUseElement$$member_(this);
+}
+;
+_SVGUseElementWrappingImplementation$Dart._get_style_SVGUseElement$$member_ = function(_this){
+  return native__SVGUseElementWrappingImplementation__get_style_SVGUseElement(_this);
 }
 ;
 _SVGUseElementWrappingImplementation$Dart.prototype.typeName$getter = function(){
@@ -41868,6 +43199,22 @@ _StyleSheetListWrappingImplementation$Dart.prototype.addAll$named = function($n,
   if ($o.count || $n != 1)
     $nsme();
   return _StyleSheetListWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_StyleSheetListWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_StyleSheetListWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _StyleSheetListWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _StyleSheetListWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -42804,6 +44151,22 @@ _TouchListWrappingImplementation$Dart.prototype.addAll$named = function($n, $o, 
   return _TouchListWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_TouchListWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_TouchListWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _TouchListWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _TouchListWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -43566,6 +44929,22 @@ _Uint16ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o
   return _Uint16ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_Uint16ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Uint16ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Uint16ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _Uint16ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -43778,6 +45157,22 @@ _Uint32ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o
   return _Uint32ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
 }
 ;
+_Uint32ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Uint32ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Uint32ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 _Uint32ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
   $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory('Cannot clear immutable List.'));
 }
@@ -43988,6 +45383,22 @@ _Uint8ArrayWrappingImplementation$Dart.prototype.addAll$named = function($n, $o,
   if ($o.count || $n != 1)
     $nsme();
   return _Uint8ArrayWrappingImplementation$Dart.prototype.addAll$member.call(this, collection);
+}
+;
+_Uint8ArrayWrappingImplementation$Dart.prototype.indexOf$member = function(element, start){
+  return _Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+_Uint8ArrayWrappingImplementation$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return _Uint8ArrayWrappingImplementation$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 _Uint8ArrayWrappingImplementation$Dart.prototype.clear$member = function(){
@@ -45231,6 +46642,14 @@ _WebKitCSSKeyframeRuleWrappingImplementation$Dart.create__WebKitCSSKeyframeRuleW
 function native__WebKitCSSKeyframeRuleWrappingImplementation_create__WebKitCSSKeyframeRuleWrappingImplementation(){
   return _WebKitCSSKeyframeRuleWrappingImplementation$Dart.create__WebKitCSSKeyframeRuleWrappingImplementation$member();
 }
+_WebKitCSSKeyframeRuleWrappingImplementation$Dart.prototype.style$getter = function(){
+  return _WebKitCSSKeyframeRuleWrappingImplementation$Dart._get_style$$member_(this);
+}
+;
+_WebKitCSSKeyframeRuleWrappingImplementation$Dart._get_style$$member_ = function(_this){
+  return native__WebKitCSSKeyframeRuleWrappingImplementation__get_style(_this);
+}
+;
 _WebKitCSSKeyframeRuleWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'WebKitCSSKeyframeRule';
 }
@@ -45816,6 +47235,14 @@ _WorkerContextWrappingImplementation$Dart.create__WorkerContextWrappingImplement
 function native__WorkerContextWrappingImplementation_create__WorkerContextWrappingImplementation(){
   return _WorkerContextWrappingImplementation$Dart.create__WorkerContextWrappingImplementation$member();
 }
+_WorkerContextWrappingImplementation$Dart.prototype.navigator$getter = function(){
+  return _WorkerContextWrappingImplementation$Dart._get_navigator$$member_(this);
+}
+;
+_WorkerContextWrappingImplementation$Dart._get_navigator$$member_ = function(_this){
+  return native__WorkerContextWrappingImplementation__get_navigator(_this);
+}
+;
 _WorkerContextWrappingImplementation$Dart.prototype.addEventListener$member = function(type, listener, useCapture){
   if (useCapture == null) {
     _WorkerContextWrappingImplementation$Dart._addEventListener$$member_(this, type, listener);
@@ -46101,6 +47528,14 @@ _WorkerNavigatorWrappingImplementation$Dart.create__WorkerNavigatorWrappingImple
 function native__WorkerNavigatorWrappingImplementation_create__WorkerNavigatorWrappingImplementation(){
   return _WorkerNavigatorWrappingImplementation$Dart.create__WorkerNavigatorWrappingImplementation$member();
 }
+_WorkerNavigatorWrappingImplementation$Dart.prototype.userAgent$getter = function(){
+  return _WorkerNavigatorWrappingImplementation$Dart._get_userAgent$$member_(this);
+}
+;
+_WorkerNavigatorWrappingImplementation$Dart._get_userAgent$$member_ = function(_this){
+  return native__WorkerNavigatorWrappingImplementation__get_userAgent(_this);
+}
+;
 _WorkerNavigatorWrappingImplementation$Dart.prototype.typeName$getter = function(){
   return 'WorkerNavigator';
 }
@@ -47027,8 +48462,33 @@ _FixedSizeListIterator$Dart.prototype._length$$getter_ = function(){
   return this._length$$field_;
 }
 ;
+function _Lists$Dart(){
+}
+_Lists$Dart.indexOf$member = function(a, element, startIndex, endIndex){
+  var tmp$0;
+  if (GTE$operator(startIndex, a.length$getter())) {
+    return negate$operator(1);
+  }
+  if (LT$operator(startIndex, 0)) {
+    startIndex = 0;
+  }
+  {
+    var i = startIndex;
+    for (; LT$operator(i, endIndex); tmp$0 = i , (i = ADD$operator(tmp$0, 1) , tmp$0)) {
+      if (EQ$operator(a.INDEX$operator(i), element)) {
+        return i;
+      }
+    }
+  }
+  return negate$operator(1);
+}
+;
 function htmlimpl0a8e4b$LevelDom$Dart(){
 }
+htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member = function(raw){
+  return raw == null?$Dart$Null:raw.dartObjectLocalStorage$getter() != null?raw.dartObjectLocalStorage$getter():htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.CSSStyleDeclarationWrappingImplementation$_wrap$41$htmlimpl0a8e4b$$Factory_(raw);
+}
+;
 htmlimpl0a8e4b$LevelDom$Dart.wrapCanvasRenderingContext$member = function(raw){
   if (raw == null) {
     return $Dart$Null;
@@ -47453,6 +48913,10 @@ htmlimpl0a8e4b$LevelDom$Dart.wrapEvent$member = function(raw){
       }
 
   }
+}
+;
+htmlimpl0a8e4b$LevelDom$Dart.wrapNavigator$member = function(raw){
+  return raw == null?$Dart$Null:raw.dartObjectLocalStorage$getter() != null?raw.dartObjectLocalStorage$getter():htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.NavigatorWrappingImplementation$_wrap$31$htmlimpl0a8e4b$$Factory_(raw);
 }
 ;
 htmlimpl0a8e4b$LevelDom$Dart.wrapNode$member = function(raw){
@@ -47933,6 +49397,44 @@ htmlimpl0a8e4b$CanvasRenderingContext2DWrappingImplementation$Dart.prototype.fil
   return htmlimpl0a8e4b$CanvasRenderingContext2DWrappingImplementation$Dart.prototype.fillRect$member.call(this, x, y, width, height);
 }
 ;
+function htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart(){
+}
+$inherits(htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart, htmlimpl0a8e4b$DOMWrapperBase$Dart);
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart'), htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$RTTimplements, null, named);
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$RTTimplements = function(rtt){
+  htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$addTo(rtt);
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$addTo = function(target){
+  var rtt = htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+  htmlimpl0a8e4b$DOMWrapperBase$Dart.$addTo(target);
+  htmld071c1$Navigator$Dart.$addTo(target);
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_ = function(ptr){
+  htmlimpl0a8e4b$DOMWrapperBase$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(this, ptr);
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_ = function(ptr){
+  htmlimpl0a8e4b$DOMWrapperBase$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(this, ptr);
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.NavigatorWrappingImplementation$_wrap$31$htmlimpl0a8e4b$$Factory_ = function(ptr){
+  var tmp$0 = new htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart;
+  tmp$0.$typeInfo = htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.$lookupRTT();
+  htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
+  htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
+  return tmp$0;
+}
+;
+htmlimpl0a8e4b$NavigatorWrappingImplementation$Dart.prototype.userAgent$getter = function(){
+  return this._ptr$htmlimpl0a8e4b$$getter_().userAgent$getter();
+}
+;
 function htmlimpl0a8e4b$SVGAnimatedLengthWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGAnimatedLengthWrappingImplementation$Dart, htmlimpl0a8e4b$DOMWrapperBase$Dart);
@@ -48213,6 +49715,156 @@ htmlimpl0a8e4b$WebGLRenderingContextWrappingImplementation$Dart.prototype.clear$
   return $bind(htmlimpl0a8e4b$WebGLRenderingContextWrappingImplementation$Dart.prototype.clear$named, htmlimpl0a8e4b$WebGLRenderingContextWrappingImplementation$Dart.prototype.clear$named_$lookupRTT, this);
 }
 ;
+function htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart(){
+}
+$inherits(htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart, htmlimpl0a8e4b$DOMWrapperBase$Dart);
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart'), htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$RTTimplements, null, named);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$RTTimplements = function(rtt){
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$addTo(rtt);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$addTo = function(target){
+  var rtt = htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+  htmlimpl0a8e4b$DOMWrapperBase$Dart.$addTo(target);
+  htmld071c1$CSSStyleDeclaration$Dart.$addTo(target);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_ = function(ptr){
+  htmlimpl0a8e4b$DOMWrapperBase$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(this, ptr);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_ = function(ptr){
+  htmlimpl0a8e4b$DOMWrapperBase$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(this, ptr);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.CSSStyleDeclarationWrappingImplementation$_wrap$41$htmlimpl0a8e4b$$Factory_ = function(ptr){
+  var tmp$0 = new htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart;
+  tmp$0.$typeInfo = htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$lookupRTT();
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
+  return tmp$0;
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$getter_ = function(){
+  return isolate$current.htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart_cachedBrowserPrefix$htmlimpl0a8e4b$$field_;
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$setter_ = function(tmp$0){
+  isolate$current.htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart_cachedBrowserPrefix$htmlimpl0a8e4b$$field_ = tmp$0;
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._browserPrefix$htmlimpl0a8e4b$$getter_ = function(){
+  var tmp$1, tmp$0;
+  if (htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$getter_() == null) {
+    if (htmlimpl0a8e4b$_Device$Dart.isFirefox$getter()) {
+      htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$setter_(tmp$0 = '-moz-') , tmp$0;
+    }
+     else {
+      htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$setter_(tmp$1 = '-webkit-') , tmp$1;
+    }
+  }
+  return htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._cachedBrowserPrefix$htmlimpl0a8e4b$$getter_();
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.cssText$setter = function(value){
+  var tmp$0;
+  this._ptr$htmlimpl0a8e4b$$getter_().cssText$setter(tmp$0 = value) , tmp$0;
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.length$getter = function(){
+  return this._ptr$htmlimpl0a8e4b$$getter_().length$getter();
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$member = function(propertyName){
+  return this._ptr$htmlimpl0a8e4b$$getter_().getPropertyValue$named(1, $noargs, propertyName);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$named = function($n, $o, propertyName){
+  if ($o.count || $n != 1)
+    $nsme();
+  return htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.getPropertyValue$member.call(this, propertyName);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.item$member = function(index){
+  return this._ptr$htmlimpl0a8e4b$$getter_().item$named(1, $noargs, index);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.item$named = function($n, $o, index){
+  if ($o.count || $n != 1)
+    $nsme();
+  return htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.item$member.call(this, index);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$member = function(propertyName, value, priority){
+  this._ptr$htmlimpl0a8e4b$$getter_().setProperty$named(3, $noargs, propertyName, value, priority);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$named = function($n, $o, propertyName, value, priority){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 2:
+      priority = '$p_priority' in $o?(++seen , $o.$p_priority):(++def , '');
+  }
+  if (seen != $o.count || seen + def + $n != 3)
+    $nsme();
+  return htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.setProperty$member.call(this, propertyName, value, priority);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.typeName$getter = function(){
+  return 'CSSStyleDeclaration';
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.clear$named = function(){
+  return this.clear$getter().apply(this, arguments);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.clear$getter = function(){
+  return this.getPropertyValue$member('clear');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.direction$getter = function(){
+  return this.getPropertyValue$member('direction');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.direction$setter = function(value){
+  this.setProperty$member('direction', value, '');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.filter$named = function(){
+  return this.filter$getter().apply(this, arguments);
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.filter$getter = function(){
+  return this.getPropertyValue$member('' + $toString(htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._browserPrefix$htmlimpl0a8e4b$$getter_()) + 'filter');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.height$getter = function(){
+  return this.getPropertyValue$member('height');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.size$getter = function(){
+  return this.getPropertyValue$member('size');
+}
+;
+htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.prototype.width$getter = function(){
+  return this.getPropertyValue$member('width');
+}
+;
+function htmlimpl0a8e4b$_Device$Dart(){
+}
+htmlimpl0a8e4b$_Device$Dart.userAgent$getter = function(){
+  return window$getter().navigator$getter().userAgent$getter();
+}
+;
+htmlimpl0a8e4b$_Device$Dart.isFirefox$getter = function(){
+  return htmlimpl0a8e4b$_Device$Dart.userAgent$getter().contains$named(2, $noargs, 'Firefox', 0);
+}
+;
 function htmlimpl0a8e4b$FilteredElementList$Dart(){
 }
 htmlimpl0a8e4b$FilteredElementList$Dart.$lookupRTT = function(typeArgs, named){
@@ -48454,6 +50106,22 @@ htmlimpl0a8e4b$FilteredElementList$Dart.prototype.getRange$named = function($n, 
   return htmlimpl0a8e4b$FilteredElementList$Dart.prototype.getRange$member.call(this, start, length_0);
 }
 ;
+htmlimpl0a8e4b$FilteredElementList$Dart.prototype.indexOf$member = function(element, start){
+  return this._filtered$htmlimpl0a8e4b$$getter_().indexOf$named(2, $noargs, element, start);
+}
+;
+htmlimpl0a8e4b$FilteredElementList$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return htmlimpl0a8e4b$FilteredElementList$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 htmlimpl0a8e4b$FilteredElementList$Dart.prototype.last$member = function(){
   return this._filtered$htmlimpl0a8e4b$$getter_().last$named(0, $noargs);
 }
@@ -48462,6 +50130,59 @@ htmlimpl0a8e4b$FilteredElementList$Dart.prototype.last$named = function($n, $o){
   if ($o.count || $n != 0)
     $nsme();
   return htmlimpl0a8e4b$FilteredElementList$Dart.prototype.last$member.call(this);
+}
+;
+function htmlimpl0a8e4b$EmptyStyleDeclaration$Dart(){
+}
+$inherits(htmlimpl0a8e4b$EmptyStyleDeclaration$Dart, htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart);
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('htmlimpl0a8e4b$EmptyStyleDeclaration$Dart'), htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$RTTimplements, null, named);
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$RTTimplements = function(rtt){
+  htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$addTo(rtt);
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$addTo = function(target){
+  var rtt = htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart.$addTo(target);
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$Constructor = function(){
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(this, document$getter().createElement$named(1, $noargs, 'div').style$getter());
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$Initializer = function(){
+  htmlimpl0a8e4b$CSSStyleDeclarationWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(this, document$getter().createElement$named(1, $noargs, 'div').style$getter());
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.EmptyStyleDeclaration$$Factory = function(){
+  var tmp$0 = new htmlimpl0a8e4b$EmptyStyleDeclaration$Dart;
+  tmp$0.$typeInfo = htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$lookupRTT();
+  htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$Initializer.call(tmp$0);
+  htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.$Constructor.call(tmp$0);
+  return tmp$0;
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.prototype.cssText$setter = function(value){
+  $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory("Can't modify a frozen style declaration."));
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.prototype.setProperty$member = function(propertyName, value, priority){
+  $Dart$ThrowException(UnsupportedOperationException$Dart.UnsupportedOperationException$$Factory("Can't modify a frozen style declaration."));
+}
+;
+htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.prototype.setProperty$named = function($n, $o, propertyName, value, priority){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 2:
+      priority = '$p_priority' in $o?(++seen , $o.$p_priority):(++def , $Dart$Null);
+  }
+  if (seen != $o.count || seen + def + $n != 3)
+    $nsme();
+  return htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.prototype.setProperty$member.call(this, propertyName, value, priority);
 }
 ;
 function htmlimpl0a8e4b$_ChildrenElementList$Dart(){
@@ -48668,6 +50389,22 @@ htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.getRange$named = function($n,
   if ($o.count || $n != 2)
     $nsme();
   return htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.getRange$member.call(this, start, length_0);
+}
+;
+htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.indexOf$member = function(element, start){
+  return htmlimpl0a8e4b$_Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.indexOf$member.call(this, element, start);
 }
 ;
 htmlimpl0a8e4b$_ChildrenElementList$Dart.prototype.clear$member = function(){
@@ -49857,6 +51594,22 @@ htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.getRange$named = function($n, $o
   return htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.getRange$member.call(this, start, length_0);
 }
 ;
+htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.indexOf$member = function(element, start){
+  return htmlimpl0a8e4b$_Lists$Dart.indexOf$member(this, element, start, this.length$getter());
+}
+;
+htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.indexOf$named = function($n, $o, element, start){
+  var seen = 0;
+  var def = 0;
+  switch ($n) {
+    case 1:
+      start = '$p_start' in $o?(++seen , $o.$p_start):(++def , 0);
+  }
+  if (seen != $o.count || seen + def + $n != 2)
+    $nsme();
+  return htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.indexOf$member.call(this, element, start);
+}
+;
 htmlimpl0a8e4b$_ChildrenNodeList$Dart.prototype.clear$member = function(){
   var tmp$0;
   this._node$htmlimpl0a8e4b$$getter_().textContent$setter(tmp$0 = '') , tmp$0;
@@ -49954,6 +51707,10 @@ htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.document$getter = funct
   return htmlimpl0a8e4b$LevelDom$Dart.wrapDocument$member(this._ptr$htmlimpl0a8e4b$$getter_().ownerDocument$getter());
 }
 ;
+htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.parent$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapNode$member(this._ptr$htmlimpl0a8e4b$$getter_().parentNode$getter());
+}
+;
 htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.replaceWith$member = function(otherNode){
   var e_0;
   try {
@@ -49985,6 +51742,19 @@ htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.remove$named = function
   if ($o.count || $n != 0)
     $nsme();
   return htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.remove$member.call(this);
+}
+;
+htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.contains$member = function(otherNode){
+  while (NE$operator(otherNode, $Dart$Null) && NE$operator(otherNode, this)) {
+    otherNode = otherNode.parent$getter();
+  }
+  return EQ$operator(otherNode, this);
+}
+;
+htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.contains$named = function($n, $o, otherNode){
+  if ($o.count || $n != 1)
+    $nsme();
+  return htmlimpl0a8e4b$NodeWrappingImplementation$Dart.prototype.contains$member.call(this, otherNode);
 }
 ;
 function htmlimpl0a8e4b$CharacterDataWrappingImplementation$Dart(){
@@ -50288,6 +52058,14 @@ htmlimpl0a8e4b$DocumentFragmentWrappingImplementation$Dart.prototype.lastElement
   return this.elements$getter().last$named(0, $noargs);
 }
 ;
+htmlimpl0a8e4b$DocumentFragmentWrappingImplementation$Dart.prototype.parent$getter = function(){
+  return $Dart$Null;
+}
+;
+htmlimpl0a8e4b$DocumentFragmentWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$EmptyStyleDeclaration$Dart.EmptyStyleDeclaration$$Factory();
+}
+;
 function htmlimpl0a8e4b$ElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$ElementWrappingImplementation$Dart, htmlimpl0a8e4b$NodeWrappingImplementation$Dart);
@@ -50360,6 +52138,20 @@ htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.innerHTML$setter = f
 ;
 htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.lastElementChild$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapElement$member(this._ptr$htmlimpl0a8e4b$$getter_().lastElementChild$getter());
+}
+;
+htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
+htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.contains$member = function(element){
+  return this._ptr$htmlimpl0a8e4b$$getter_().contains$named(1, $noargs, htmlimpl0a8e4b$LevelDom$Dart.unwrap$member(element));
+}
+;
+htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.contains$named = function($n, $o, element){
+  if ($o.count || $n != 1)
+    $nsme();
+  return htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.contains$member.call(this, element);
 }
 ;
 htmlimpl0a8e4b$ElementWrappingImplementation$Dart.prototype.query$member = function(selectors){
@@ -51174,6 +52966,10 @@ htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.InputElementWrappingImple
   htmlimpl0a8e4b$InputElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$InputElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.prototype.pattern$getter = function(){
+  return this._ptr$htmlimpl0a8e4b$$getter_().pattern$getter();
 }
 ;
 htmlimpl0a8e4b$InputElementWrappingImplementation$Dart.prototype.size$getter = function(){
@@ -52790,6 +54586,10 @@ htmlimpl0a8e4b$DocumentWrappingImplementation$Dart.prototype._documentPtr$htmlim
   return this._documentPtr$htmlimpl0a8e4b$$field_;
 }
 ;
+htmlimpl0a8e4b$DocumentWrappingImplementation$Dart.prototype.parent$getter = function(){
+  return $Dart$Null;
+}
+;
 htmlimpl0a8e4b$DocumentWrappingImplementation$Dart.prototype.window$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapWindow$member(this._documentPtr$htmlimpl0a8e4b$$getter_().defaultView$getter());
 }
@@ -53107,6 +54907,10 @@ htmlimpl0a8e4b$SVGAElementWrappingImplementation$Dart.SVGAElementWrappingImpleme
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGAElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGAltGlyphDefElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGAltGlyphDefElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53387,6 +55191,10 @@ htmlimpl0a8e4b$SVGCircleElementWrappingImplementation$Dart.SVGCircleElementWrapp
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGCircleElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53420,6 +55228,10 @@ htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart.SVGClipPathElementW
   htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGClipPathElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGComponentTransferFunctionElementWrappingImplementation$Dart(){
@@ -53527,6 +55339,10 @@ htmlimpl0a8e4b$SVGDefsElementWrappingImplementation$Dart.SVGDefsElementWrappingI
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGDefsElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGDescElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGDescElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53562,6 +55378,10 @@ htmlimpl0a8e4b$SVGDescElementWrappingImplementation$Dart.SVGDescElementWrappingI
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGDescElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53595,6 +55415,10 @@ htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart.SVGEllipseElementWra
   htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGEllipseElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEBlendElementWrappingImplementation$Dart(){
@@ -53640,6 +55464,10 @@ htmlimpl0a8e4b$SVGFEBlendElementWrappingImplementation$Dart.prototype.width$gett
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEBlendElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEColorMatrixElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEColorMatrixElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53681,6 +55509,10 @@ htmlimpl0a8e4b$SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.heig
 ;
 htmlimpl0a8e4b$SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFEColorMatrixElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEComponentTransferElementWrappingImplementation$Dart(){
@@ -53726,6 +55558,10 @@ htmlimpl0a8e4b$SVGFEComponentTransferElementWrappingImplementation$Dart.prototyp
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEComponentTransferElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEConvolveMatrixElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEConvolveMatrixElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53767,6 +55603,10 @@ htmlimpl0a8e4b$SVGFEConvolveMatrixElementWrappingImplementation$Dart.prototype.h
 ;
 htmlimpl0a8e4b$SVGFEConvolveMatrixElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFEConvolveMatrixElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEDiffuseLightingElementWrappingImplementation$Dart(){
@@ -53812,6 +55652,10 @@ htmlimpl0a8e4b$SVGFEDiffuseLightingElementWrappingImplementation$Dart.prototype.
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEDiffuseLightingElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEDisplacementMapElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEDisplacementMapElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53853,6 +55697,10 @@ htmlimpl0a8e4b$SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.
 ;
 htmlimpl0a8e4b$SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFEDisplacementMapElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEDistantLightElementWrappingImplementation$Dart(){
@@ -53933,6 +55781,10 @@ htmlimpl0a8e4b$SVGFEDropShadowElementWrappingImplementation$Dart.prototype.width
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEDropShadowElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEFloodElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEFloodElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -53974,6 +55826,10 @@ htmlimpl0a8e4b$SVGFEFloodElementWrappingImplementation$Dart.prototype.height$get
 ;
 htmlimpl0a8e4b$SVGFEFloodElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFEFloodElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEFuncAElementWrappingImplementation$Dart(){
@@ -54159,6 +56015,10 @@ htmlimpl0a8e4b$SVGFEGaussianBlurElementWrappingImplementation$Dart.prototype.wid
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEGaussianBlurElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEImageElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEImageElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54202,6 +56062,10 @@ htmlimpl0a8e4b$SVGFEImageElementWrappingImplementation$Dart.prototype.width$gett
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEImageElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEMergeElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEMergeElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54243,6 +56107,10 @@ htmlimpl0a8e4b$SVGFEMergeElementWrappingImplementation$Dart.prototype.height$get
 ;
 htmlimpl0a8e4b$SVGFEMergeElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFEMergeElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFEMergeNodeElementWrappingImplementation$Dart(){
@@ -54323,6 +56191,10 @@ htmlimpl0a8e4b$SVGFEOffsetElementWrappingImplementation$Dart.prototype.width$get
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFEOffsetElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFEPointLightElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFEPointLightElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54399,6 +56271,10 @@ htmlimpl0a8e4b$SVGFESpecularLightingElementWrappingImplementation$Dart.prototype
 ;
 htmlimpl0a8e4b$SVGFESpecularLightingElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFESpecularLightingElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFESpotLightElementWrappingImplementation$Dart(){
@@ -54479,6 +56355,10 @@ htmlimpl0a8e4b$SVGFETileElementWrappingImplementation$Dart.prototype.width$gette
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFETileElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFETurbulenceElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFETurbulenceElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54522,6 +56402,10 @@ htmlimpl0a8e4b$SVGFETurbulenceElementWrappingImplementation$Dart.prototype.width
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGFETurbulenceElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGFilterElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGFilterElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54563,6 +56447,10 @@ htmlimpl0a8e4b$SVGFilterElementWrappingImplementation$Dart.prototype.height$gett
 ;
 htmlimpl0a8e4b$SVGFilterElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGFilterElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGFontElementWrappingImplementation$Dart(){
@@ -54818,6 +56706,10 @@ htmlimpl0a8e4b$SVGForeignObjectElementWrappingImplementation$Dart.prototype.widt
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGForeignObjectElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54851,6 +56743,10 @@ htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart.SVGGElementWrappingImpleme
   htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGGElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGGlyphElementWrappingImplementation$Dart(){
@@ -54923,6 +56819,10 @@ htmlimpl0a8e4b$SVGGlyphRefElementWrappingImplementation$Dart.SVGGlyphRefElementW
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGGlyphRefElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -54956,6 +56856,10 @@ htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart.SVGGradientElementW
   htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGGradientElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGHKernElementWrappingImplementation$Dart(){
@@ -55036,6 +56940,10 @@ htmlimpl0a8e4b$SVGImageElementWrappingImplementation$Dart.prototype.width$getter
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGImageElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55069,6 +56977,10 @@ htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart.SVGLineElementWrappingI
   htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGLineElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGLinearGradientElementWrappingImplementation$Dart(){
@@ -55176,6 +57088,10 @@ htmlimpl0a8e4b$SVGMarkerElementWrappingImplementation$Dart.SVGMarkerElementWrapp
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGMarkerElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGMaskElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGMaskElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55217,6 +57133,10 @@ htmlimpl0a8e4b$SVGMaskElementWrappingImplementation$Dart.prototype.height$getter
 ;
 htmlimpl0a8e4b$SVGMaskElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGMaskElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGMetadataElementWrappingImplementation$Dart(){
@@ -55324,6 +57244,10 @@ htmlimpl0a8e4b$SVGPathElementWrappingImplementation$Dart.SVGPathElementWrappingI
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGPathElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGPatternElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGPatternElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55367,6 +57291,10 @@ htmlimpl0a8e4b$SVGPatternElementWrappingImplementation$Dart.prototype.width$gett
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
 }
 ;
+htmlimpl0a8e4b$SVGPatternElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGPolygonElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGPolygonElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55406,6 +57334,10 @@ htmlimpl0a8e4b$SVGPolygonElementWrappingImplementation$Dart.prototype.points$get
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGPointList$member(this._ptr$htmlimpl0a8e4b$$getter_().points$getter());
 }
 ;
+htmlimpl0a8e4b$SVGPolygonElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGPolylineElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGPolylineElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55443,6 +57375,10 @@ htmlimpl0a8e4b$SVGPolylineElementWrappingImplementation$Dart.SVGPolylineElementW
 ;
 htmlimpl0a8e4b$SVGPolylineElementWrappingImplementation$Dart.prototype.points$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGPointList$member(this._ptr$htmlimpl0a8e4b$$getter_().points$getter());
+}
+;
+htmlimpl0a8e4b$SVGPolylineElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGRadialGradientElementWrappingImplementation$Dart(){
@@ -55521,6 +57457,10 @@ htmlimpl0a8e4b$SVGRectElementWrappingImplementation$Dart.prototype.height$getter
 ;
 htmlimpl0a8e4b$SVGRectElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGRectElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGScriptElementWrappingImplementation$Dart(){
@@ -55628,6 +57568,10 @@ htmlimpl0a8e4b$SVGStopElementWrappingImplementation$Dart.SVGStopElementWrappingI
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGStopElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGStyleElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGStyleElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55698,6 +57642,10 @@ htmlimpl0a8e4b$SVGSwitchElementWrappingImplementation$Dart.SVGSwitchElementWrapp
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGSwitchElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGSymbolElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGSymbolElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55733,6 +57681,10 @@ htmlimpl0a8e4b$SVGSymbolElementWrappingImplementation$Dart.SVGSymbolElementWrapp
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGSymbolElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -55766,6 +57718,10 @@ htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart.SVGTextContentEl
   htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+htmlimpl0a8e4b$SVGTextContentElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGTextPathElementWrappingImplementation$Dart(){
@@ -56013,6 +57969,10 @@ htmlimpl0a8e4b$SVGTitleElementWrappingImplementation$Dart.SVGTitleElementWrappin
   return tmp$0;
 }
 ;
+htmlimpl0a8e4b$SVGTitleElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
+}
+;
 function htmlimpl0a8e4b$SVGUseElementWrappingImplementation$Dart(){
 }
 $inherits(htmlimpl0a8e4b$SVGUseElementWrappingImplementation$Dart, htmlimpl0a8e4b$SVGElementWrappingImplementation$Dart);
@@ -56054,6 +58014,10 @@ htmlimpl0a8e4b$SVGUseElementWrappingImplementation$Dart.prototype.height$getter 
 ;
 htmlimpl0a8e4b$SVGUseElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGUseElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$SVGVKernElementWrappingImplementation$Dart(){
@@ -56167,6 +58131,10 @@ htmlimpl0a8e4b$SVGSVGElementWrappingImplementation$Dart.prototype.height$getter 
 ;
 htmlimpl0a8e4b$SVGSVGElementWrappingImplementation$Dart.prototype.width$getter = function(){
   return htmlimpl0a8e4b$LevelDom$Dart.wrapSVGAnimatedLength$member(this._ptr$htmlimpl0a8e4b$$getter_().width$getter());
+}
+;
+htmlimpl0a8e4b$SVGSVGElementWrappingImplementation$Dart.prototype.style$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapCSSStyleDeclaration$member(this._ptr$htmlimpl0a8e4b$$getter_().style$getter());
 }
 ;
 function htmlimpl0a8e4b$StorageEventWrappingImplementation$Dart(){
@@ -56678,6 +58646,14 @@ htmlimpl0a8e4b$WindowWrappingImplementation$Dart.prototype.localStorage$getter =
   return htmlimpl0a8e4b$LevelDom$Dart.wrapStorage$member(this._ptr$htmlimpl0a8e4b$$getter_().localStorage$getter());
 }
 ;
+htmlimpl0a8e4b$WindowWrappingImplementation$Dart.prototype.navigator$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapNavigator$member(this._ptr$htmlimpl0a8e4b$$getter_().navigator$getter());
+}
+;
+htmlimpl0a8e4b$WindowWrappingImplementation$Dart.prototype.parent$getter = function(){
+  return htmlimpl0a8e4b$LevelDom$Dart.wrapWindow$member(this._ptr$htmlimpl0a8e4b$$getter_().parent$getter());
+}
+;
 htmlimpl0a8e4b$WindowWrappingImplementation$Dart.prototype.clearInterval$member = function(handle){
   if (handle == null) {
     this._ptr$htmlimpl0a8e4b$$getter_().clearInterval$named(0, $noargs);
@@ -56767,6 +58743,27 @@ htmlimpl0a8e4b$XMLHttpRequestProgressEventWrappingImplementation$Dart.XMLHttpReq
   htmlimpl0a8e4b$XMLHttpRequestProgressEventWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Initializer_.call(tmp$0, ptr);
   htmlimpl0a8e4b$XMLHttpRequestProgressEventWrappingImplementation$Dart._wrap$htmlimpl0a8e4b$$Constructor_.call(tmp$0, ptr);
   return tmp$0;
+}
+;
+function htmlimpl0a8e4b$_Lists$Dart(){
+}
+htmlimpl0a8e4b$_Lists$Dart.indexOf$member = function(a, element, startIndex, endIndex){
+  var tmp$0;
+  if (GTE$operator(startIndex, a.length$getter())) {
+    return negate$operator(1);
+  }
+  if (LT$operator(startIndex, 0)) {
+    startIndex = 0;
+  }
+  {
+    var i = startIndex;
+    for (; LT$operator(i, endIndex); tmp$0 = i , (i = ADD$operator(tmp$0, 1) , tmp$0)) {
+      if (EQ$operator(a.INDEX$operator(i), element)) {
+        return i;
+      }
+    }
+  }
+  return negate$operator(1);
 }
 ;
 function htmld071c1$AnchorElement$Dart(){
@@ -57445,6 +59442,17 @@ htmld071c1$ModElement$Dart.$addTo = function(target){
   var rtt = htmld071c1$ModElement$Dart.$lookupRTT();
   target.implementedTypes[rtt.classKey] = rtt;
   htmld071c1$Element$Dart.$addTo(target);
+}
+;
+function htmld071c1$Navigator$Dart(){
+}
+htmld071c1$Navigator$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('htmld071c1$Navigator$Dart'), null, null, named);
+}
+;
+htmld071c1$Navigator$Dart.$addTo = function(target){
+  var rtt = htmld071c1$Navigator$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
 }
 ;
 function htmld071c1$Notation$Dart(){
@@ -59665,6 +61673,17 @@ htmld071c1$BodyElement$Dart.$addTo = function(target){
   htmld071c1$Element$Dart.$addTo(target);
 }
 ;
+function htmld071c1$CSSStyleDeclaration$Dart(){
+}
+htmld071c1$CSSStyleDeclaration$Dart.$lookupRTT = function(typeArgs, named){
+  return RTT.create($cls('htmld071c1$CSSStyleDeclaration$Dart'), null, null, named);
+}
+;
+htmld071c1$CSSStyleDeclaration$Dart.$addTo = function(target){
+  var rtt = htmld071c1$CSSStyleDeclaration$Dart.$lookupRTT();
+  target.implementedTypes[rtt.classKey] = rtt;
+}
+;
 function htmld071c1$CloseEvent$Dart(){
 }
 htmld071c1$CloseEvent$Dart.$lookupRTT = function(typeArgs, named){
@@ -60495,6 +62514,7 @@ unnamed93577e$mc$Dart.$Constructor = function(){
 }
 ;
 unnamed93577e$mc$Dart.$Initializer = function(){
+  this.menuDivPosition$field = 1;
 }
 ;
 unnamed93577e$mc$Dart.mc$$Factory = function(){
@@ -60527,6 +62547,14 @@ unnamed93577e$mc$Dart.prototype._intervalId$unnamed93577e$$getter_ = function(){
 ;
 unnamed93577e$mc$Dart.prototype._intervalId$unnamed93577e$$setter_ = function(tmp$0){
   this._intervalId$unnamed93577e$$field_ = tmp$0;
+}
+;
+unnamed93577e$mc$Dart.prototype.menuDivPosition$getter = function(){
+  return this.menuDivPosition$field;
+}
+;
+unnamed93577e$mc$Dart.prototype.menuDivPosition$setter = function(tmp$0){
+  this.menuDivPosition$field = tmp$0;
 }
 ;
 unnamed93577e$mc$Dart.prototype.drawSnake$member = function(){
@@ -60577,6 +62605,29 @@ unnamed93577e$mc$Dart.prototype.drawSnake$getter = function(){
   return $bind(unnamed93577e$mc$Dart.prototype.drawSnake$named, unnamed93577e$mc$Dart.prototype.drawSnake$named_$lookupRTT, this);
 }
 ;
+unnamed93577e$mc$Dart.prototype.changePosition$member = function(){
+  var tmp$1, tmp$0;
+  var status_0 = htmld071c1$document$getter().query$named(1, $noargs, '#menu_bar');
+  if (LT$operator(this.menuDivPosition$getter(), 75)) {
+    status_0.style$getter().cssText$setter(tmp$0 = ADD$operator(ADD$operator('position:absolute;  display:block; top:', this.menuDivPosition$getter().abs$named(0, $noargs)), 'px;')) , tmp$0;
+    this.menuDivPosition$setter(tmp$1 = ADD$operator(this.menuDivPosition$getter(), 1)) , tmp$1;
+  }
+}
+;
+unnamed93577e$mc$Dart.prototype.changePosition$named = function($n, $o){
+  if ($o.count || $n != 0)
+    $nsme();
+  return unnamed93577e$mc$Dart.prototype.changePosition$member.call(this);
+}
+;
+unnamed93577e$mc$Dart.prototype.changePosition$named_$lookupRTT = function(){
+  return RTT.createFunction(null, RTT.dynamicType.$lookupRTT());
+}
+;
+unnamed93577e$mc$Dart.prototype.changePosition$getter = function(){
+  return $bind(unnamed93577e$mc$Dart.prototype.changePosition$named, unnamed93577e$mc$Dart.prototype.changePosition$named_$lookupRTT, this);
+}
+;
 unnamed93577e$mc$Dart.prototype.write$member = function(message){
   var tmp$0;
   htmld071c1$document$getter().query$named(1, $noargs, '#status').innerHTML$setter(tmp$0 = message) , tmp$0;
@@ -60589,6 +62640,7 @@ unnamed93577e$mc$Dart.prototype.writeStatus$member = function(message){
 ;
 unnamed93577e$mc$Dart.prototype.onKeyPress$member = function(event_0){
   var tmp$9, tmp$5, tmp$6, tmp$7, tmp$8, tmp$1, tmp$2, tmp$3, tmp$4, tmp$11, tmp$10, tmp$0;
+  var home_0 = htmld071c1$document$getter().window$getter().setInterval$named(2, $noargs, this.changePosition$getter(), 10);
   switch (event_0.keyCode$getter()) {
     case 38:
       this.snake$getter().direction$setter(tmp$0 = 'up') , tmp$0;
@@ -60710,6 +62762,10 @@ isolate$inits.push(function(){
   this.direction$field = 'right';
   this.color$field = 'black';
   this.pending_direction$field = 'right';
+}
+);
+isolate$inits.push(function(){
+  this.menuDivPosition$field = 1;
 }
 );
 RunEntry(unnamed93577e$main$member, this.arguments ? (this.arguments.slice ? [].concat(this.arguments.slice()) : this.arguments) : []);

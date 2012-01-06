@@ -9,6 +9,7 @@ class mc {
   Snake snake;
   Ball ball;
   var _intervalId;
+  var menuDivPosition = 1;
   
   mc() {
     
@@ -21,6 +22,7 @@ class mc {
     
    
     _intervalId = document.window.setInterval(this.drawSnake, 10);
+    
   }
   
 
@@ -68,6 +70,23 @@ class mc {
     }
  }
 
+  void changePosition() {
+
+    DivElement status =  document.query('#menu_bar');
+    
+    //TODO: call this onMouseOver menu div
+    
+  
+    if(menuDivPosition < 75){
+    
+      status.style.cssText = "position:absolute;  display:block; top:" + menuDivPosition.abs() + "px;";
+      
+      menuDivPosition =  menuDivPosition + 1;
+    }
+   
+    
+   }
+  
   void write(String message) {
 
     document.query('#status').innerHTML = message;
@@ -80,6 +99,8 @@ class mc {
   }
   
   void onKeyPress(event) {
+    
+    var home = document.window.setInterval(this.changePosition, 10);
 
     switch(event.keyCode){
     
