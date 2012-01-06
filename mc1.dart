@@ -2,6 +2,7 @@
 #import('dart:core');
 #source('Snake.dart');
 #source('Ball.dart');
+#resource('style.css');
 
 class mc {
 
@@ -70,6 +71,7 @@ class mc {
   void write(String message) {
 
     document.query('#status').innerHTML = message;
+
   }
  
   void writeStatus(String message) {
