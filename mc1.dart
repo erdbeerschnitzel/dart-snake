@@ -10,6 +10,7 @@ class mc {
   Ball ball;
   var _intervalId;
   var menuDivPosition = 1;
+  var menuText = "Some";
   
   mc() {
     
@@ -19,6 +20,26 @@ class mc {
     
     snake = new Snake();
     ball = new Ball();
+    
+    DivElement some = document.query('#some');
+    DivElement thing = document.query('#thing');
+    
+    some.on.mouseOver.add((e) {
+      
+      menuDivPosition = 1;
+      menuText = "Some";
+      document.window.setInterval(this.changePosition, 10);
+      
+      });
+    
+    thing.on.mouseOver.add((e) { 
+      
+      menuDivPosition = 1;
+      menuText = "thing";
+      document.window.setInterval(this.changePosition, 10);
+      
+    });
+    
     
    
     _intervalId = document.window.setInterval(this.drawSnake, 10);
@@ -74,12 +95,12 @@ class mc {
 
     DivElement status =  document.query('#menu_bar');
     
-    //TODO: call this onMouseOver menu div
-    
+    status.innerHTML = "<h1>" + menuText + "</h1>";
+
   
     if(menuDivPosition < 75){
     
-      status.style.cssText = "position:absolute;  display:block; top:" + menuDivPosition.abs() + "px;";
+      status.style.cssText = "text-align:center; position:absolute;  display:block; top:" + menuDivPosition.abs() + "px;";
       
       menuDivPosition =  menuDivPosition + 1;
     }
