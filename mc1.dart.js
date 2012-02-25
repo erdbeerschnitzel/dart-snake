@@ -6611,7 +6611,7 @@ function mc() {
   this.menuDivPosition = (1);
   this.menuText = "Some";
   html_get$document().get$on().get$keyPress().add(this.get$onKeyPress(), false);
-  if (html_get$document().get$window().get$localStorage().getItem("highscore") != null) this.write($$add("Previous Score: ", html_get$document().get$window().get$localStorage().getItem("highscore")));
+  if (html_get$document().get$window().get$localStorage().getItem("highscore") != null) this.write($$add("previous Score: ", html_get$document().get$window().get$localStorage().getItem("highscore")));
   this.snake = new Snake();
   this.ball = new Ball();
   var some = html_get$document().query("#some");
