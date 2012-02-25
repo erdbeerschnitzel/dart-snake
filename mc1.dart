@@ -9,21 +9,16 @@ class mc {
   Snake snake;
   Ball ball;
   var _intervalId;
-  var menuDivPosition = 1;
-  var menuText = "Some";
   
   mc() {
     
     document.on.keyPress.add(onKeyPress);
     
-    if(document.window.localStorage.getItem('highscore') != null) write('previous Score: ' + document.window.localStorage.getItem('highscore'));
+    if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem('highscore'));
     
     snake = new Snake();
     ball = new Ball();
-    
-    DivElement some = document.query('#some');
-    DivElement thing = document.query('#thing');
-   
+
     _intervalId = document.window.setInterval(this.drawSnake, 10);
     
   }
@@ -73,22 +68,6 @@ class mc {
     }
  }
 
-  void changePosition() {
-
-    DivElement status =  document.query('#menu_bar');
-    
-    status.innerHTML = "<h1>" + menuText + "</h1>";
-
-  
-    if(menuDivPosition < 75){
-    
-      status.style.cssText = "text-align:center; position:absolute;  display:block; top:" + menuDivPosition.abs() + "px;";
-      
-      menuDivPosition =  menuDivPosition + 1;
-    }
-   
-    
-   }
   
   void write(String message) {
 
@@ -103,8 +82,6 @@ class mc {
   
   void onKeyPress(event) {
     
-    var home = document.window.setInterval(this.changePosition, 10);
-
     switch(event.keyCode){
     
     case 38: snake.direction = 'up'; snake.pos_Y -= 10;
