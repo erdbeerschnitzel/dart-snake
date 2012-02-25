@@ -23,24 +23,6 @@ class mc {
     
     DivElement some = document.query('#some');
     DivElement thing = document.query('#thing');
-    
-    some.on.mouseOver.add((e) {
-      
-      menuDivPosition = 1;
-      menuText = "Some";
-      document.window.setInterval(this.changePosition, 10);
-      
-      });
-    
-    thing.on.mouseOver.add((e) { 
-      
-      menuDivPosition = 1;
-      menuText = "thing";
-      document.window.setInterval(this.changePosition, 10);
-      
-    });
-    
-    
    
     _intervalId = document.window.setInterval(this.drawSnake, 10);
     
