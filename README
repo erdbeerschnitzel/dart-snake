@@ -1,7 +1,17 @@
 DART SNAKE README
 
+a simple snake game written in Google Dart
 
-TODO: write something...
+
+TODO: 
+
+- improve ball-catching
+- improve ball-spawning
+- improve border-detection
+- improve visualization of snake
+- make it more like snake
+
+
 
 
 by Peter
