@@ -2,14 +2,17 @@ class Snake {
   
   int lenght = 10;
   int width = 10;
-  int pos_X = 25;
-  int pos_Y = 25;
+  int pos_X;
+  int pos_Y;
   int points = 0;
   String direction = 'right';
   String color = 'black';
   String pending_direction = 'right';  
   
   Snake(){
+    
+    pos_X = 25;
+    pos_Y = 25;
     
   }
   

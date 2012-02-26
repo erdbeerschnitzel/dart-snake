@@ -6476,7 +6476,7 @@ mc.prototype.drawSnake = function() {
     html_get$document().get$on().get$keyPress().remove(this.get$onKeyPress(), false);
   }
   else {
-    this.writeStatus($$add(" " + drawingArea.get$width(), " -> ") + drawingArea.get$height());
+    this.writeStatus($$add($$add($$add($$add($$add("ball pos: " + this.ball.pos_X.toInt(), ", ") + this.ball.pos_Y.toInt(), " to the "), this.snake.direction), " --> x: ") + this.snake.pos_X, " y: ") + this.snake.pos_Y);
   }
 }
 mc.prototype.get$drawSnake = function() {
@@ -6523,12 +6523,12 @@ mc.prototype.get$onKeyPress = function() {
 function Snake() {
   this.lenght = (10);
   this.width = (10);
-  this.pos_X = (25);
-  this.pos_Y = (25);
   this.points = (0);
   this.direction = "right";
   this.color = "black";
   this.pending_direction = "right";
+  this.pos_X = (25);
+  this.pos_Y = (25);
 }
 Snake.prototype.get$width = function() { return this.width; };
 Snake.prototype.catches = function(ball) {
