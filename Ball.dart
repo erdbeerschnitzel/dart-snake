@@ -16,8 +16,6 @@ class Ball {
     if(pos_X < 5) pos_X += 10;
     
     if(pos_Y < 5) pos_Y += 10;
-    
-    //while(pos_X > 385) pos_X = pos_X - 50;
-    //while(pos_Y > 385) pos_Y = pos_Y - 50;
+
   }
 }
