@@ -64,7 +64,9 @@ class mc {
       
     }else {
       
-      writeStatus('to the ' + snake.direction + ' --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
+      writeStatus(" " + drawingArea.width + " -> " +  drawingArea.height);
+      //writeStatus("ball pos: " + ball.pos_X.toInt() + ", " + ball.pos_Y.toInt() + ' to the ' + snake.direction + ' --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
+      //writeStatus('to the ' + snake.direction + ' --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
     }
  }
 

@@ -233,6 +233,13 @@ function StackOverflowException() {
 StackOverflowException.prototype.toString = function() {
   return "Stack Overflow";
 }
+// ********** Code for BadNumberFormatException **************
+function BadNumberFormatException(_s) {
+  this._s = _s;
+}
+BadNumberFormatException.prototype.toString = function() {
+  return ("BadNumberFormatException: '" + this._s + "'");
+}
 // ********** Code for NullPointerException **************
 function NullPointerException() {
 
@@ -419,6 +426,17 @@ NumImplementation.prototype.abs = function() {
 }
 NumImplementation.prototype.hashCode = function() {
   'use strict'; return this & 0x1FFFFFFF;
+}
+NumImplementation.prototype.toInt = function() {
+  
+    'use strict';
+    if (isNaN(this)) $throw(new BadNumberFormatException("NaN"));
+    if ((this == Infinity) || (this == -Infinity)) {
+      $throw(new BadNumberFormatException("Infinity"));
+    }
+    var truncated = (this < 0) ? Math.ceil(this) : Math.floor(this);
+    if (truncated == -0.0) return 0;
+    return truncated;
 }
 // ********** Code for Collections **************
 function Collections() {}
@@ -6458,7 +6476,7 @@ mc.prototype.drawSnake = function() {
     html_get$document().get$on().get$keyPress().remove(this.get$onKeyPress(), false);
   }
   else {
-    this.writeStatus($$add($$add($$add("to the ", this.snake.direction), " --> x: ") + this.snake.pos_X, " y: ") + this.snake.pos_Y);
+    this.writeStatus($$add(" " + drawingArea.get$width(), " -> ") + drawingArea.get$height());
   }
 }
 mc.prototype.get$drawSnake = function() {
@@ -6528,10 +6546,12 @@ Snake.prototype.touchesWall = function(canvas) {
 // ********** Code for Ball **************
 function Ball() {
   this.size = (8);
-  this.pos_X = ((2) + Math.random() * Math.random() * (324324)).abs();
-  this.pos_Y = ((2) + Math.random() * Math.random() * (324324)).abs();
-  while (this.pos_X > (300)) this.pos_X = (0) + this.pos_X / (2);
-  while (this.pos_Y > (140)) this.pos_Y = (0) + this.pos_Y / (2);
+  this.pos_X = ((2) + Math.random() * Math.random() * (400)).abs();
+  this.pos_Y = ((2) + Math.random() * Math.random() * (400)).abs();
+  while (this.pos_X > (300)) this.pos_X = (this.pos_X / (2)).toInt();
+  while (this.pos_Y > (300)) this.pos_Y = (this.pos_Y / (2)).toInt();
+  if (this.pos_X < (5)) this.pos_X = this.pos_X + (10);
+  if (this.pos_Y < (5)) this.pos_Y = this.pos_Y + (10);
 }
 // ********** Code for top level **************
 function main() {
