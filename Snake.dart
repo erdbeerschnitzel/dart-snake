@@ -1,6 +1,5 @@
 class Snake {
   
-  int lenght = 10;
   int width = 10;
   int pos_X;
   int pos_Y;
@@ -8,11 +7,28 @@ class Snake {
   String direction = 'right';
   String color = 'black';
   String pending_direction = 'right';  
+  List<int> parts;
   
   Snake(){
     
     pos_X = 25;
     pos_Y = 25;
+    
+    parts = new List<int>();
+    
+    for(var i= 0; i < 10; i++){
+      
+      parts.add(1);
+    }
+    
+  }
+  
+  void increaseLength(int length){
+    
+    for(var i= 0; i < length; i++){
+      
+      parts.add(1);
+    }
     
   }
   
@@ -20,7 +36,7 @@ class Snake {
     
     if(ball.pos_Y >= this.pos_Y - 10 && ball.pos_Y <= this.pos_Y + 10 && ball.pos_X <= this.pos_X + 10 && ball.pos_X >= this.pos_X - 10) {
       
-      this.lenght += 5;
+      increaseLength(5);
       this.points += 1;
       
       return true;

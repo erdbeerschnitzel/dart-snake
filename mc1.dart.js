@@ -93,9 +93,35 @@ function $$eq(x, y) {
 $defProp(Object.prototype, '$eq', function(other) {
   return this === other;
 });
+function $$lt$complex(x, y) {
+  if (typeof(x) == 'number') {
+    $throw(new IllegalArgumentException(y));
+  } else if (typeof(x) == 'object') {
+    return x.$lt(y);
+  } else {
+    $throw(new NoSuchMethodException(x, "operator <", [y]));
+  }
+}
+function $$lt(x, y) {
+  if (typeof(x) == 'number' && typeof(y) == 'number') return x < y;
+  return $$lt$complex(x, y);
+}
 function $$ne(x, y) {
   if (x == null) return y != null;
   return (typeof(x) != 'object') ? x !== y : !x.$eq(y);
+}
+function $$sub$complex(x, y) {
+  if (typeof(x) == 'number') {
+    $throw(new IllegalArgumentException(y));
+  } else if (typeof(x) == 'object') {
+    return x.$sub(y);
+  } else {
+    $throw(new NoSuchMethodException(x, "operator -", [y]));
+  }
+}
+function $$sub(x, y) {
+  if (typeof(x) == 'number' && typeof(y) == 'number') return x - y;
+  return $$sub$complex(x, y);
 }
 function $$truncdiv(x, y) {
   if (typeof(x) == 'number') {
@@ -6447,22 +6473,34 @@ mc.prototype.drawSnake = function() {
   switch (this.snake.direction) {
     case "left":
 
-      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, this.snake.lenght, (10));
+      for (var i = (0);
+       $$lt(i, this.snake.parts.get$length()); i = $$add(i, (1))) {
+        ctx.fillRect($$add(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
+      }
       $throw(new FallThroughError());
 
     case "right":
 
-      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, this.snake.lenght, (10));
+      for (var i = (0);
+       $$lt(i, this.snake.parts.get$length()); i = $$add(i, (1))) {
+        ctx.fillRect($$sub(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
+      }
       $throw(new FallThroughError());
 
     case "up":
 
-      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (10), this.snake.lenght);
+      for (var i = (0);
+       $$lt(i, this.snake.parts.get$length()); i = $$add(i, (1))) {
+        ctx.fillRect(this.snake.pos_X, $$add(this.snake.pos_Y, i), (10), (1));
+      }
       $throw(new FallThroughError());
 
     case "down":
 
-      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (10), this.snake.lenght);
+      for (var i = (0);
+       $$lt(i, this.snake.parts.get$length()); i = $$add(i, (1))) {
+        ctx.fillRect(this.snake.pos_X, $$sub(this.snake.pos_Y, i), (10), (1));
+      }
 
   }
   if (this.snake.catches(this.ball)) {
@@ -6521,7 +6559,6 @@ mc.prototype.get$onKeyPress = function() {
 }
 // ********** Code for Snake **************
 function Snake() {
-  this.lenght = (10);
   this.width = (10);
   this.points = (0);
   this.direction = "right";
@@ -6529,11 +6566,22 @@ function Snake() {
   this.pending_direction = "right";
   this.pos_X = (25);
   this.pos_Y = (25);
+  this.parts = new Array();
+  for (var i = (0);
+   $$lt(i, (10)); i = $$add(i, (1))) {
+    this.parts.add((1));
+  }
 }
 Snake.prototype.get$width = function() { return this.width; };
+Snake.prototype.increaseLength = function(length) {
+  for (var i = (0);
+   $$lt(i, length); i = $$add(i, (1))) {
+    this.parts.add((1));
+  }
+}
 Snake.prototype.catches = function(ball) {
   if (ball.pos_Y >= this.pos_Y - (10) && ball.pos_Y <= this.pos_Y + (10) && ball.pos_X <= this.pos_X + (10) && ball.pos_X >= this.pos_X - (10)) {
-    this.lenght = this.lenght + (5);
+    this.increaseLength((5));
     this.points = this.points + (1);
     return true;
   }

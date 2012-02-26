@@ -36,10 +36,26 @@ class mc {
     //TODO: improve!
     switch(snake.direction){
     
-      case 'left': ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10);
-      case 'right': ctx.fillRect(snake.pos_X, snake.pos_Y, snake.lenght, 10);
-      case 'up': ctx.fillRect(snake.pos_X, snake.pos_Y, 10, snake.lenght);
-      case 'down': ctx.fillRect(snake.pos_X, snake.pos_Y, 10, snake.lenght);
+      case 'left':     for(var i=0; i < snake.parts.length; i++){
+        
+        ctx.fillRect(snake.pos_X+i, snake.pos_Y, 1, 10);
+      }
+
+      case 'right': for(var i=0; i < snake.parts.length; i++){
+        
+        ctx.fillRect(snake.pos_X-i, snake.pos_Y, 1, 10);
+      }
+
+      case 'up': for(var i=0; i < snake.parts.length; i++){
+        
+        ctx.fillRect(snake.pos_X, snake.pos_Y+i, 10, 1);
+      }
+
+      case 'down': for(var i=0; i < snake.parts.length; i++){
+        
+        ctx.fillRect(snake.pos_X, snake.pos_Y-i, 10, 1);
+      }
+
     
     }
     
@@ -86,7 +102,7 @@ class mc {
     
     switch(event.keyCode){
     
-    case 38: snake.direction = 'up'; snake.pos_Y -= 10;
+    case 38: snake.direction = 'up'; snake.pos_Y -= 10; 
     case 40: snake.direction = 'down'; snake.pos_Y += 10;
     case 37: snake.direction = 'left'; snake.pos_X -= 10;
     case 39: snake.direction = 'right'; snake.pos_X += 10;
