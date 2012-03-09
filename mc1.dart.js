@@ -1641,7 +1641,10 @@ mc.prototype.drawSnake = function() {
   switch (this.snake.direction) {
     case "left":
 
-      for (var i = (0);
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (1), (10));
+      ctx.fillStyle = "black";
+      for (var i = (1);
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect($add$(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
       }
@@ -1649,7 +1652,10 @@ mc.prototype.drawSnake = function() {
 
     case "right":
 
-      for (var i = (0);
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (1), (10));
+      ctx.fillStyle = "black";
+      for (var i = (1);
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect($sub$(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
       }
@@ -1657,7 +1663,10 @@ mc.prototype.drawSnake = function() {
 
     case "up":
 
-      for (var i = (0);
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (10), (1));
+      ctx.fillStyle = "black";
+      for (var i = (1);
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect(this.snake.pos_X, $add$(this.snake.pos_Y, i), (10), (1));
       }
@@ -1665,7 +1674,10 @@ mc.prototype.drawSnake = function() {
 
     case "down":
 
-      for (var i = (0);
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.snake.pos_X, this.snake.pos_Y, (10), (1));
+      ctx.fillStyle = "black";
+      for (var i = (1);
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect(this.snake.pos_X, $sub$(this.snake.pos_Y, i), (10), (1));
       }

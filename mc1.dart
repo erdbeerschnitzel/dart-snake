@@ -2,7 +2,7 @@
 #import('dart:core');
 #source('Snake.dart');
 #source('Ball.dart');
-#resource('style.css');
+#resource('css\style.css');
 
 class mc {
 
@@ -36,22 +36,48 @@ class mc {
     //TODO: improve!
     switch(snake.direction){
     
-      case 'left':     for(var i=0; i < snake.parts.length; i++){
+      case 'left':     
+        
+        ctx.fillStyle = 'red'; 
+        ctx.fillRect(snake.pos_X, snake.pos_Y, 1, 10);
+        
+        ctx.fillStyle = 'black';
+        
+        for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X+i, snake.pos_Y, 1, 10);
       }
 
-      case 'right': for(var i=0; i < snake.parts.length; i++){
+      case 'right': 
+        
+        ctx.fillStyle = 'red'; 
+        ctx.fillRect(snake.pos_X, snake.pos_Y, 1, 10);
+        ctx.fillStyle = 'black';
+        
+        for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X-i, snake.pos_Y, 1, 10);
       }
 
-      case 'up': for(var i=0; i < snake.parts.length; i++){
+      case 'up': 
+        
+        ctx.fillStyle = 'red'; 
+        ctx.fillRect(snake.pos_X, snake.pos_Y, 10, 1);
+        ctx.fillStyle = 'black';
+        
+        for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X, snake.pos_Y+i, 10, 1);
       }
 
-      case 'down': for(var i=0; i < snake.parts.length; i++){
+      case 'down': 
+        
+        
+        ctx.fillStyle = 'red'; 
+        ctx.fillRect(snake.pos_X, snake.pos_Y, 10, 1);
+        ctx.fillStyle = 'black';
+        
+        for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X, snake.pos_Y-i, 10, 1);
       }
