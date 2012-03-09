@@ -19,7 +19,7 @@ class mc {
     snake = new Snake();
     ball = new Ball();
 
-    _intervalId = document.window.setInterval(this.drawSnake, 10);
+    _intervalId = document.window.setInterval(this.drawSnake, 5);
     
   }
   
@@ -46,7 +46,9 @@ class mc {
         for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X+i, snake.pos_Y, 1, 10);
-      }
+        }
+        
+        break;
 
       case 'right': 
         
@@ -57,7 +59,9 @@ class mc {
         for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X-i, snake.pos_Y, 1, 10);
-      }
+        }
+        
+        break;
 
       case 'up': 
         
@@ -68,7 +72,9 @@ class mc {
         for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X, snake.pos_Y+i, 10, 1);
-      }
+        }
+        
+        break;
 
       case 'down': 
         
@@ -80,19 +86,11 @@ class mc {
         for(var i=1; i < snake.parts.length; i++){
         
         ctx.fillRect(snake.pos_X, snake.pos_Y-i, 10, 1);
-      }
+        }
+        
+        break;
 
     
-    }
-    
-    
-
-    if(snake.catches(ball)){
-      
-      write('Points: ' + snake.points);
-      
-      ball = new Ball();
-
     }
 
     
@@ -109,7 +107,18 @@ class mc {
       //writeStatus(" " + drawingArea.width + " -> " +  drawingArea.height);
       writeStatus("ball pos: " + ball.pos_X.toInt() + ", " + ball.pos_Y.toInt() + ' to the ' + snake.direction + ' --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
       //writeStatus('to the ' + snake.direction + ' --> x: ' + snake.pos_X + ' y: ' + snake.pos_Y);
+    }    
+
+    if(snake.catches(ball)){
+      
+      write('Points: ' + snake.points);
+      
+      ball = new Ball();
+
     }
+
+    
+
  }
 
   
@@ -126,14 +135,18 @@ class mc {
   
   void onKeyPress(event) {
     
+    
+    
     switch(event.keyCode){
     
-    case 38: snake.direction = 'up'; snake.pos_Y -= 10; 
-    case 40: snake.direction = 'down'; snake.pos_Y += 10;
-    case 37: snake.direction = 'left'; snake.pos_X -= 10;
-    case 39: snake.direction = 'right'; snake.pos_X += 10;
+    case 38: snake.direction = 'up'; snake.pos_Y -= 10;  break;
+    case 40: snake.direction = 'down'; snake.pos_Y += 10; break; 
+    case 37: snake.direction = 'left'; snake.pos_X -= 10; break;
+    case 39: snake.direction = 'right'; snake.pos_X += 10; break;
     
     }
+    
+    write('keycode is: ' + event.keyCode + ' snake direction is: ' + snake.direction);
   }
   
   

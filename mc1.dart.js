@@ -1631,7 +1631,7 @@ function mc() {
   if (get$$document().get$window().localStorage.getItem("highscore") != null) this.write($add$("Previous Score: ", get$$document().get$window().localStorage.getItem("highscore")));
   this.snake = new Snake();
   this.ball = new Ball();
-  this._intervalId = get$$document().get$window().setInterval(this.get$drawSnake(), (10));
+  this._intervalId = get$$document().get$window().setInterval(this.get$drawSnake(), (5));
 }
 mc.prototype.drawSnake = function() {
   var drawingArea = get$$document().query("#drawingArea");
@@ -1648,7 +1648,7 @@ mc.prototype.drawSnake = function() {
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect($add$(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
       }
-      $throw(new FallThroughError());
+      break;
 
     case "right":
 
@@ -1659,7 +1659,7 @@ mc.prototype.drawSnake = function() {
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect($sub$(this.snake.pos_X, i), this.snake.pos_Y, (1), (10));
       }
-      $throw(new FallThroughError());
+      break;
 
     case "up":
 
@@ -1670,7 +1670,7 @@ mc.prototype.drawSnake = function() {
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect(this.snake.pos_X, $add$(this.snake.pos_Y, i), (10), (1));
       }
-      $throw(new FallThroughError());
+      break;
 
     case "down":
 
@@ -1681,11 +1681,8 @@ mc.prototype.drawSnake = function() {
        $lt$(i, this.snake.parts.get$length()); i = $add$(i, (1))) {
         ctx.fillRect(this.snake.pos_X, $sub$(this.snake.pos_Y, i), (10), (1));
       }
+      break;
 
-  }
-  if (this.snake.catches(this.ball)) {
-    this.write("Points: " + this.snake.points);
-    this.ball = new Ball();
   }
   if (this.snake.touchesWall(drawingArea)) {
     this.writeStatus("Game over!");
@@ -1695,6 +1692,10 @@ mc.prototype.drawSnake = function() {
   }
   else {
     this.writeStatus($add$($add$($add$($add$($add$("ball pos: " + this.ball.pos_X.toInt(), ", ") + this.ball.pos_Y.toInt(), " to the "), this.snake.direction), " --> x: ") + this.snake.pos_X, " y: ") + this.snake.pos_Y);
+  }
+  if (this.snake.catches(this.ball)) {
+    this.write("Points: " + this.snake.points);
+    this.ball = new Ball();
   }
 }
 mc.prototype.get$drawSnake = function() {
@@ -1736,26 +1737,28 @@ mc.prototype.onKeyPress = function(event) {
 
       this.snake.direction = "up";
       ($0 = this.snake).pos_Y = $0.pos_Y - (10);
-      $throw(new FallThroughError());
+      break;
 
     case (40):
 
       this.snake.direction = "down";
       ($1 = this.snake).pos_Y = $1.pos_Y + (10);
-      $throw(new FallThroughError());
+      break;
 
     case (37):
 
       this.snake.direction = "left";
       ($2 = this.snake).pos_X = $2.pos_X - (10);
-      $throw(new FallThroughError());
+      break;
 
     case (39):
 
       this.snake.direction = "right";
       ($3 = this.snake).pos_X = $3.pos_X + (10);
+      break;
 
   }
+  this.write($add$($add$("keycode is: " + event.get$keyCode(), " snake direction is: "), this.snake.direction));
 }
 mc.prototype.get$onKeyPress = function() {
   return this.onKeyPress.bind(this);
@@ -1795,7 +1798,7 @@ Snake.prototype.touchesWall = function(canvas) {
 }
 // ********** Code for Ball **************
 function Ball() {
-  this.size = (8);
+  this.size = (15);
   this.pos_X = ((2) + Math.random() * Math.random() * (400)).abs();
   this.pos_Y = ((2) + Math.random() * Math.random() * (400)).abs();
   while (this.pos_X > (300)) this.pos_X = (this.pos_X / (2)).toInt();
