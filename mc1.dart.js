@@ -598,7 +598,7 @@ $defProp(Object.prototype, '$typeNameOf', (function() {
   if (typeof(navigator) != 'object') return chrome$typeNameOf;
 
   var userAgent = navigator.userAgent;
-  if (/Chrome/.test(userAgent)) return chrome$typeNameOf;
+  if (/Chrome|DumpRenderTree/.test(userAgent)) return chrome$typeNameOf;
   if (/Firefox/.test(userAgent)) return firefox$typeNameOf;
   if (/MSIE/.test(userAgent)) return ie$typeNameOf;
   return function() { return constructorNameWithFallback(this); };
@@ -803,11 +803,11 @@ $dynamic("_removeEventListener").DOMApplicationCache = function(type, listener, 
 // ********** Code for _DirectoryReaderSyncImpl **************
 // ********** Code for _DivElementImpl **************
 // ********** Code for _DocumentImpl **************
-$dynamic("get$window").HTMLHtmlElement = function() {
-  return this.parentNode.defaultView;
-}
 $dynamic("get$on").HTMLHtmlElement = function() {
   return new _DocumentEventsImpl(this.get$_jsDocument());
+}
+$dynamic("get$window").HTMLHtmlElement = function() {
+  return this.parentNode.defaultView;
 }
 $dynamic("_createElement").HTMLHtmlElement = function(tagName) {
   return this.parentNode.createElement(tagName);
@@ -1082,22 +1082,22 @@ function _ListWrapper() {}
 _ListWrapper.prototype.is$List = function(){return true};
 _ListWrapper.prototype.is$Collection = function(){return true};
 _ListWrapper.prototype.iterator = function() {
-  return this._list.iterator();
+  return this._html_list.iterator();
 }
 _ListWrapper.prototype.get$length = function() {
-  return this._list.get$length();
+  return this._html_list.get$length();
 }
 _ListWrapper.prototype.$index = function(index) {
-  return this._list.$index(index);
+  return this._html_list.$index(index);
 }
 _ListWrapper.prototype.add = function(value) {
-  return this._list.add(value);
+  return this._html_list.add(value);
 }
 _ListWrapper.prototype.clear = function() {
-  return this._list.clear();
+  return this._html_list.clear();
 }
 _ListWrapper.prototype.removeLast = function() {
-  return this._list.removeLast();
+  return this._html_list.removeLast();
 }
 // ********** Code for _NodeListImpl **************
 $dynamic("is$List").NodeList = function(){return true};
@@ -1331,6 +1331,7 @@ $dynamic("_removeEventListener").SVGElementInstance = function(type, listener, u
 // ********** Code for _SelectElementImpl **************
 // ********** Code for _ShadowElementImpl **************
 // ********** Code for _ShadowRootImpl **************
+$dynamic("set$innerHTML").ShadowRoot = function(value) { return this.innerHTML = value; };
 // ********** Code for _SharedWorkerImpl **************
 // ********** Code for _SharedWorkerContextImpl **************
 // ********** Code for _SourceElementImpl **************
@@ -1794,7 +1795,7 @@ function Ball() {
 function main() {
   new mc();
 }
-// 32 dynamic types.
+// 33 dynamic types.
 // 211 types
 // 18 !leaf
 function $dynamicSetMetadata(inputTable) {

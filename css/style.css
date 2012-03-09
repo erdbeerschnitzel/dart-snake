@@ -1,0 +1,9 @@
+#bottom {
+bottom: 5px;
+text-align: center;
+}
+#drawingArea{
+border-color:black;
+border-width:2px;
+border-style:solid;
+}
