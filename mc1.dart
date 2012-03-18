@@ -13,10 +13,8 @@ class mc {
   mc() {
     
     document.on.keyPress.add(onKeyPress);
-    String f = "f";
-    String a = "abc" "de$f";
-    
-    if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem('highscore'));
+
+    if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem("highscore"));
     
     snake = new Snake();
     ball = new Ball();
@@ -119,8 +117,6 @@ class mc {
 
     }
 
-    
-
  }
 
   
@@ -136,9 +132,7 @@ class mc {
   }
   
   void onKeyPress(event) {
-    
-    
-    
+  
     switch(event.keyCode){
     
     case 38: snake.direction = 'up'; snake.pos_Y -= 10;  break;
