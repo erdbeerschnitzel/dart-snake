@@ -13,6 +13,8 @@ class mc {
   mc() {
     
     document.on.keyPress.add(onKeyPress);
+    String f = "f";
+    String a = "abc" "de$f";
     
     if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem('highscore'));
     

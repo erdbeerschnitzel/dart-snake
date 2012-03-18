@@ -2864,6 +2864,8 @@ var _pendingMeasurementFrameCallbacks;
 // ********** Code for mc **************
 function mc() {
   get$$document().get$on().get$keyPress().add(this.get$onKeyPress(), false);
+  var f = "f";
+  var a = ("abc" + ("de" + f));
   if (get$$document().get$window().localStorage.getItem("highscore") != null) this.write($add$("Previous Score: ", get$$document().get$window().localStorage.getItem("highscore")));
   this.snake = new Snake();
   this.ball = new Ball();
