@@ -145,8 +145,7 @@ class mc {
     case 39: snake.direction = 'right'; snake.pos_X += 10; break;
     
     }
-    
-    write('keycode is: ' + event.keyCode + ' snake direction is: ' + snake.direction);
+
   }
   
   
