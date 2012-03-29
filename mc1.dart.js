@@ -165,7 +165,7 @@ NoSuchMethodException.prototype.toString = function() {
     sb.add(this._arguments.$index(i));
   }
   if (null == this._existingArgumentNames) {
-    return $add$($add$(("NoSuchMethodException : method not found: '" + this._functionName + "'\n"), ("Receiver: " + this._receiver + "\n")), ("Arguments: [" + sb + "]"));
+    return (("NoSuchMethodException : method not found: '" + this._functionName + "'\n") + ("Receiver: " + this._receiver + "\n") + ("Arguments: [" + sb + "]"));
   }
   else {
     var actualParameters = sb.toString();
@@ -178,7 +178,7 @@ NoSuchMethodException.prototype.toString = function() {
       sb.add(this._existingArgumentNames.$index(i));
     }
     var formalParameters = sb.toString();
-    return $add$($add$($add$("NoSuchMethodException: incorrect number of arguments passed to ", ("method named '" + this._functionName + "'\nReceiver: " + this._receiver + "\n")), ("Tried calling: " + this._functionName + "(" + actualParameters + ")\n")), ("Found: " + this._functionName + "(" + formalParameters + ")"));
+    return ("NoSuchMethodException: incorrect number of arguments passed to " + ("method named '" + this._functionName + "'\nReceiver: " + this._receiver + "\n") + ("Tried calling: " + this._functionName + "(" + actualParameters + ")\n") + ("Found: " + this._functionName + "(" + formalParameters + ")"));
   }
 }
 // ********** Code for ClosureArgumentMismatchException **************
@@ -1815,6 +1815,7 @@ $dynamic("clear$0").IDBObjectStore = function() {
 // ********** Code for _IDBVersionChangeRequestImpl **************
 // ********** Code for _IFrameElementImpl **************
 $dynamic("is$html_Element").HTMLIFrameElement = function(){return true};
+// ********** Code for _IceCandidateImpl **************
 // ********** Code for _ImageDataImpl **************
 // ********** Code for _ImageElementImpl **************
 $dynamic("is$html_Element").HTMLImageElement = function(){return true};
@@ -2433,6 +2434,7 @@ $dynamic("is$html_Element").HTMLScriptElement = function(){return true};
 // ********** Code for _ScriptProfileNodeImpl **************
 // ********** Code for _SelectElementImpl **************
 $dynamic("is$html_Element").HTMLSelectElement = function(){return true};
+// ********** Code for _SessionDescriptionImpl **************
 // ********** Code for _ShadowElementImpl **************
 $dynamic("is$html_Element").HTMLShadowElement = function(){return true};
 // ********** Code for _ShadowRootImpl **************
@@ -2449,6 +2451,7 @@ $dynamic("is$html_Element").HTMLSpanElement = function(){return true};
 // ********** Code for _SpeechInputEventImpl **************
 // ********** Code for _SpeechInputResultImpl **************
 // ********** Code for _SpeechInputResultListImpl **************
+// ********** Code for _SpeechRecognitionImpl **************
 // ********** Code for _SpeechRecognitionAlternativeImpl **************
 // ********** Code for _SpeechRecognitionErrorImpl **************
 // ********** Code for _SpeechRecognitionEventImpl **************
@@ -2864,8 +2867,6 @@ var _pendingMeasurementFrameCallbacks;
 // ********** Code for mc **************
 function mc() {
   get$$document().get$on().get$keyPress().add(this.get$onKeyPress(), false);
-  var f = "f";
-  var a = ("abc" + ("de" + f));
   if (get$$document().get$window().localStorage.getItem("highscore") != null) this.write($add$("Previous Score: ", get$$document().get$window().localStorage.getItem("highscore")));
   this.snake = new Snake();
   this.ball = new Ball();
