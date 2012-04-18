@@ -14,7 +14,7 @@ class mc {
     
     document.on.keyPress.add(onKeyPress);
 
-    if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem("highscore"));
+    if(document.window.localStorage.getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.getItem('highscore'));
     
     snake = new Snake();
     ball = new Ball();
