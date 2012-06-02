@@ -2913,6 +2913,7 @@ function _CSSMatrixFactoryProvider() {}
 function _DOMParserFactoryProvider() {}
 function _DOMURLFactoryProvider() {}
 function _DeprecatedPeerConnectionFactoryProvider() {}
+function _Elements() {}
 function _EventSourceFactoryProvider() {}
 function _FileReaderFactoryProvider() {}
 function _FileReaderSyncFactoryProvider() {}
@@ -2935,7 +2936,6 @@ function _XMLHttpRequestFactoryProvider() {}
 function _XMLSerializerFactoryProvider() {}
 function _XPathEvaluatorFactoryProvider() {}
 function _XSLTProcessorFactoryProvider() {}
-function _Elements() {}
 function _Collections() {}
 _Collections.forEach = function(iterable, f) {
   for (var $$i = iterable.iterator(); $$i.hasNext(); ) {
@@ -3210,8 +3210,8 @@ Snake.prototype.touchesWall = function(canvas) {
 }
 function Ball() {
   this.size = (15);
-  this.pos_X = ((2) + Math.random() * Math.random() * (400)).abs();
-  this.pos_Y = ((2) + Math.random() * Math.random() * (400)).abs();
+  this.pos_X = ((2) + Math.random() * Math.random() * (400)).abs().toInt();
+  this.pos_Y = ((2) + Math.random() * Math.random() * (400)).abs().toInt();
   while (this.pos_X > (300)) this.pos_X = (this.pos_X / (2)).toInt();
   while (this.pos_Y > (300)) this.pos_Y = (this.pos_Y / (2)).toInt();
   if (this.pos_X < (5)) this.pos_X = this.pos_X + (10);

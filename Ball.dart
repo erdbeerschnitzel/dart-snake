@@ -6,8 +6,8 @@ class Ball {
   
   Ball(){
     
-    pos_X = (2 + Math.random()*Math.random()*400).abs();
-    pos_Y = (2 + Math.random()*Math.random()*400).abs();
+    pos_X = (2 + Math.random()*Math.random()*400).abs().toInt();
+    pos_Y = (2 + Math.random()*Math.random()*400).abs().toInt();
     
     while(pos_X > 300) pos_X = (pos_X / 2).toInt();
     
