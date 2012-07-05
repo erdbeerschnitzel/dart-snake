@@ -14,7 +14,7 @@ class mc {
     
     document.on.keyPress.add(onKeyPress);
 
-    if(document.window.localStorage.$dom_getItem('highscore') != null) write('Previous Score: ' + document.window.localStorage.$dom_getItem('highscore'));
+    if(document.window.localStorage['highscore'] != null) write('Previous Score: ${document.window.localStorage['highscore']}');
     
     snake = new Snake();
     ball = new Ball();
@@ -97,7 +97,7 @@ class mc {
     if(snake.touchesWall(drawingArea)){
       
       writeStatus("Game over!");
-      document.window.localStorage.$dom_setItem('highscore', snake.points.toString());
+      document.window.localStorage['highscore'] = snake.points.toString();
 
       document.window.clearInterval(_intervalId);
       document.on.keyPress.remove(onKeyPress);
