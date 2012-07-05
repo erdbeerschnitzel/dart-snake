@@ -1170,9 +1170,9 @@ $$.mc = {"":
     $.indexSet($.document().get$window().get$localStorage(), 'highscore', $.toString(t1.get$points()));
     $.document().get$window().clearInterval$1(this._intervalId);
     $.document().get$on().get$keyPress().remove$1(this.get$onKeyPress());
-  } else this.writeStatus$1($.add($.add($.add($.add($.add($.add($.add($.add($.add('ball pos: ', $.toInt(this.ball.get$pos_X())), ', '), $.toInt(this.ball.get$pos_Y())), ' to the '), t1.get$direction()), ' --> x: '), t1.get$pos_X()), ' y: '), t1.get$pos_Y()));
+  }
   if (t1.catches$1(this.ball) === true) {
-    this.write$1($.add('Points: ', t1.get$points()));
+    this.write$1('Points: ' + $.S(t1.get$points()));
     this.ball = $.Ball$0();
   }
  },
